@@ -1,0 +1,7 @@
+{
+    "parent": "towntime:block/shop_block",
+    "textures": {
+        "0": "towntime:block/shop/yellow",
+        "particle": "towntime:block/shop/yellow"
+    }
+}
