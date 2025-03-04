@@ -6,17 +6,17 @@
       "request": "launch",
       "name": "Client",
       "presentation": {
-        "group": "Mod Development - towntime_mod",
+        "group": "Mod Development - TownTimeMod",
         "order": 0
       },
-      "projectName": "towntime_mod",
+      "projectName": "TownTimeMod",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\lechi\\Desktop\\towntime_mod\\build\\moddev\\clientRunProgramArgs.txt"
+        "@C:\\Users\\lechi\\Desktop\\TownTimeMod\\build\\moddev\\clientRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\lechi\\Desktop\\towntime_mod\\build\\moddev\\clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dtowntime%%C:\\Users\\lechi\\Desktop\\towntime_mod\\bin\\main"
+        "@C:\\Users\\lechi\\Desktop\\TownTimeMod\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dtowntime%%C:\\Users\\lechi\\Desktop\\TownTimeMod\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},
@@ -28,17 +28,17 @@
       "request": "launch",
       "name": "Data",
       "presentation": {
-        "group": "Mod Development - towntime_mod",
+        "group": "Mod Development - TownTimeMod",
         "order": 1
       },
-      "projectName": "towntime_mod",
+      "projectName": "TownTimeMod",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\lechi\\Desktop\\towntime_mod\\build\\moddev\\dataRunProgramArgs.txt"
+        "@C:\\Users\\lechi\\Desktop\\TownTimeMod\\build\\moddev\\dataRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\lechi\\Desktop\\towntime_mod\\build\\moddev\\dataRunVmArgs.txt",
-        "-Dfml.modFolders\u003dtowntime%%C:\\Users\\lechi\\Desktop\\towntime_mod\\bin\\main"
+        "@C:\\Users\\lechi\\Desktop\\TownTimeMod\\build\\moddev\\dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dtowntime%%C:\\Users\\lechi\\Desktop\\TownTimeMod\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},
@@ -50,17 +50,17 @@
       "request": "launch",
       "name": "GameTestServer",
       "presentation": {
-        "group": "Mod Development - towntime_mod",
+        "group": "Mod Development - TownTimeMod",
         "order": 2
       },
-      "projectName": "towntime_mod",
+      "projectName": "TownTimeMod",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\lechi\\Desktop\\towntime_mod\\build\\moddev\\gameTestServerRunProgramArgs.txt"
+        "@C:\\Users\\lechi\\Desktop\\TownTimeMod\\build\\moddev\\gameTestServerRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\lechi\\Desktop\\towntime_mod\\build\\moddev\\gameTestServerRunVmArgs.txt",
-        "-Dfml.modFolders\u003dtowntime%%C:\\Users\\lechi\\Desktop\\towntime_mod\\bin\\main"
+        "@C:\\Users\\lechi\\Desktop\\TownTimeMod\\build\\moddev\\gameTestServerRunVmArgs.txt",
+        "-Dfml.modFolders\u003dtowntime%%C:\\Users\\lechi\\Desktop\\TownTimeMod\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},
@@ -72,17 +72,17 @@
       "request": "launch",
       "name": "Server",
       "presentation": {
-        "group": "Mod Development - towntime_mod",
+        "group": "Mod Development - TownTimeMod",
         "order": 3
       },
-      "projectName": "towntime_mod",
+      "projectName": "TownTimeMod",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\lechi\\Desktop\\towntime_mod\\build\\moddev\\serverRunProgramArgs.txt"
+        "@C:\\Users\\lechi\\Desktop\\TownTimeMod\\build\\moddev\\serverRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\lechi\\Desktop\\towntime_mod\\build\\moddev\\serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dtowntime%%C:\\Users\\lechi\\Desktop\\towntime_mod\\bin\\main"
+        "@C:\\Users\\lechi\\Desktop\\TownTimeMod\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dtowntime%%C:\\Users\\lechi\\Desktop\\TownTimeMod\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},

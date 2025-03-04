@@ -1,23 +1,4 @@
 {
     "itemGroup.towntime": "Example Mod Tab",
-    "item.towntime.example_item": "Example Item",
-
-
-    "block.towntime.shop_block_white": "Shop Block",
-    "block.towntime.shop_block_light_gray": "Light Gray Shop Block",
-    "block.towntime.shop_block_gray": "Gray Shop Block",
-    "block.towntime.shop_block_black": "Black Shop Block",
-    "block.towntime.shop_block_brown": "Brown Shop Block",
-    "block.towntime.shop_block_red": "Red Shop Block",
-    "block.towntime.shop_block_orange": "Orange Shop Block",
-    "block.towntime.shop_block_yellow": "Yellow Shop Block",
-    "block.towntime.shop_block_lime": "Lime Shop Block",
-    "block.towntime.shop_block_green": "Green Shop Block",
-    "block.towntime.shop_block_cyan": "Cyan Shop Block",
-    "block.towntime.shop_block_light_blue": "Light Blue Shop Block",
-    "block.towntime.shop_block_blue": "Blue Shop Block",
-    "block.towntime.shop_block_purple": "Purple Shop Block",
-    "block.towntime.shop_block_magenta": "Magenta Shop Block",
-    "block.towntime.shop_block_pink": "Pink Shop Block"
-
+    "item.towntime.example_item": "Example Item"
 }

@@ -1,7 +1,0 @@
-{
-    "parent": "towntime:block/shop_block",
-    "textures": {
-        "0": "towntime:block/shop/light_blue",
-        "particle": "towntime:block/shop/light_blue"
-    }
-}

@@ -4,10 +4,6 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import net.fightingpainter.mc.towntime.coined.blocks.ModBlocks;
-import net.fightingpainter.mc.towntime.coined.blocks.custom.client.ShopBlockEntityRenderer;
-import net.fightingpainter.mc.towntime.coined.screens.ModScreens;
-import net.fightingpainter.mc.towntime.coined.screens.ShopScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -87,11 +83,6 @@ public class TownTime {
         // // Register the Deferred Register to the mod event bus so tabs get registered
         // CREATIVE_MODE_TABS.register(modEventBus);
 
-        //========= COINED MOD ========\\ (I left the coined mod at home so I'll add some stuff in here for now)
-
-        ModBlocks.register(modEventBus);
-        ModScreens.register(modEventBus);
-
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (TownTimeMod) to respond directly to events.
@@ -119,26 +110,6 @@ public class TownTime {
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-
-            //shop blocks
-            event.accept(ModBlocks.SHOP_BLOCK_WHITE_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_LIGHT_GRAY_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_GRAY_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_BLACK_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_BROWN_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_RED_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_ORANGE_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_YELLOW_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_LIME_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_GREEN_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_CYAN_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_LIGHT_BLUE_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_BLUE_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_PURPLE_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_MAGENTA_ITEM);
-            event.accept(ModBlocks.SHOP_BLOCK_PINK_ITEM);
-        }
         // if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS)
         //     event.accept(EXAMPLE_BLOCK_ITEM);
     }
@@ -154,14 +125,5 @@ public class TownTime {
     @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
 
-        @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event) {
-            BlockEntityRenderers.register(ModBlocks.SHOP_BLOCK_ENTITY.get(), ShopBlockEntityRenderer::new);
-        }
-
-        @SubscribeEvent
-        public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
-            event.register(ModScreens.SHOP_MENU.get(), ShopScreen::new);
-        }
     }
 }
