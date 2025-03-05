@@ -1,6 +1,8 @@
 package net.fightingpainter.mc.towntime.hud.bars;
 
-import cpw.mods.modlauncher.api.ITransformationService.Resource;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -60,11 +62,10 @@ public class BaseBar {
      * Renders the text (<value>/<maxValue>) on top of the bar.
      * @param guiGraphics The graphics object to render with.
     */
-    private void renderValue(GuiGraphics guiGraphics) {//the value/maxValue text ontop of the bar
-        String text = (int) value + "/" + (int) maxValue; // Create the text to render
-        int textWidth = guiGraphics.getStringWidth(text); // Calculate the width of the text
-        int textX = x + (length / 2) - (textWidth / 2); // Calculate the x position of the text
-        int textY = y + (height / 2) - 4; // Calculate the y position of the text
-        guiGraphics.drawString(text, textX, textY, 0xFFFFFF); // Render the text
+    private void renderValue(GuiGraphics guiGraphics) {
+        String text = (int)value+"/"+(int)maxValue; // Create the text to render
+        Minecraft minecraft = Minecraft.getInstance();
+        Font font = minecraft.font;
+        guiGraphics.drawString(font, text, x + length / 2 - font.width(text) / 2, y - font.lineHeight, 0xFFFFFF); // Render the text
     }
 }

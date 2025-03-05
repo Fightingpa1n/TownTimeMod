@@ -9,6 +9,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 @EventBusSubscriber(modid=TownTime.MOD_ID, bus = EventBusSubscriber.Bus.GAME, value=Dist.CLIENT)
@@ -30,6 +31,7 @@ public class Client {
             || overlay == VanillaGuiLayers.EXPERIENCE_BAR
             || overlay == VanillaGuiLayers.EXPERIENCE_LEVEL
             || overlay == VanillaGuiLayers.VEHICLE_HEALTH
+            || overlay == VanillaGuiLayers.HOTBAR
             || overlay == VanillaGuiLayers.ARMOR_LEVEL
         ) {event.setCanceled(true);}
 
@@ -54,7 +56,12 @@ public class Client {
 
     @SubscribeEvent
     public static void registerOverlay(RenderGuiEvent.Pre event) { //register Hud Overlays
-        TownTime.LOGGER.info("Rendering Hud Overlays");
+        // TownTime.LOGGER.info("Rendering Hud Overlays");
         HudRenderer.render(event.getGuiGraphics());
+    }
+
+    @SubscribeEvent
+    public static void renderGui(ScreenEvent.Render.Post event) {
+        HudRenderer.xpBarRenderer(event.getScreen(), event.getGuiGraphics());
     }
 }
