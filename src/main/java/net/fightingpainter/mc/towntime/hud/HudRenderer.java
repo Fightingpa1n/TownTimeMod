@@ -46,7 +46,17 @@ public class HudRenderer {
         int hudX = graphics.guiWidth() - HudTextureWidth;
         int hudY = graphics.guiHeight() - HudTextureHeight;
         graphics.blit(HudBackground, hudX, hudY, 0, 0, HudTextureWidth, HudTextureHeight, HudTextureWidth, HudTextureHeight); //render background
+        
+        int leftX = 0; //left x
+        int rightX = graphics.guiWidth(); //right x
 
+        int topY = 0; //top y
+        int bottomY = graphics.guiHeight(); //bottom y
+        
+        int centerX = graphics.guiWidth() / 2; //center x
+        int centerY = graphics.guiHeight() / 2; //center y
+
+        //the hotbar should be bottom center
         hotbar.renderElement(graphics, player, hudX, hudY); //render hotbar
 
         healthBar.renderElement(graphics, player, hudX, hudY); //render health bar

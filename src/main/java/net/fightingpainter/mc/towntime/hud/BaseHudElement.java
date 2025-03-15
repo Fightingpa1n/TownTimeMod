@@ -6,28 +6,21 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
+/**
+ * Base Hud Element
+ * Used to create custom hud elements
+ * Contains a bunch of render Helper methods
+ * @see #shouldRender(Player player)
+ * @see #getParameters(Player player)
+ * @see #render()
+*/
 public abstract class BaseHudElement {
-    private final int xOffset, yOffset; //x and y offset
+    private GuiGraphics graphics; //graphics instance
+    private int width, height; //width and height
     private int x, y; //x and y position
 
-    public BaseHudElement(int xOffset, int yOffset) {
-        this.xOffset = xOffset;
-        this.yOffset = yOffset;
-    }
-
+    //============================== Subclass Methods ==============================\\
     //=========== Abstract Methods ===========\\
-    /**
-     * Render the component 
-     * @param graphics the GuiGraphics instance to render stuff
-    */
-    public abstract void render(GuiGraphics graphics); //render method
-
-    /**
-     * Get the parameters of the component
-     * @param player the player to get the parameters and stuff from
-    */
-    public abstract void getParameters(Player player); //get parameters method
-
     /**
      * Check if the component should render
      * @param player the player to get the parameters and stuff from
@@ -35,25 +28,55 @@ public abstract class BaseHudElement {
     */
     public abstract boolean shouldRender(Player player); //should render method
     
+    /**
+     * Get the parameters of the component
+     * @param player the player to get the parameters and stuff from
+     */
+    public abstract void getParameters(Player player); //get parameters method
+    
+    /**
+     * Render the component
+     * Rendering should use the graphics instance to render stuff
+     * the element should be rendered at the x and y position
+     * the parametrs should be private variables in the subclass and updated in the getParameters method
+     * @see #getParameters(Player player)
+    */
+    public abstract void render(); //render method
+    
     //=========== Rendering ===========\\
     /**
-     * Render Logic for the element (render if shouldRender is true)
+     * Render Logic for the element (get's parameters and renders only if shouldRender is true)
+     * Positioning should be done in the hud renderer using the setPos method or using the alternate renderElement method
      * @param graphics the GuiGraphics instance to render stuff
      * @param player the player to get the parameters and stuff from
-     * @param x the x position
-     * @param y the y position
+     * @see #setPos(int x, int y)
+     * @see #renderElement(GuiGraphics graphics, Player player, int x, int y)
     */
-    public void renderElement(GuiGraphics graphics, Player player, int x, int y) {
-        if (shouldRender(player)) {
-            setPos(x, y);
-            getParameters(player);
-            render(graphics);
+    public void renderElement(GuiGraphics graphics, Player player) {
+        if (shouldRender(player)) { //if should render is true
+            this.graphics = graphics; //update graphics instance
+            getParameters(player); //get parameters from player
+            render(); //render the element
         }
     }
 
+    /**
+     * Render Logic for the element (get's parameters and renders only if shouldRender is true)
+     * @param graphics the GuiGraphics instance to render stuff
+     * @param player the player to get the parameters and stuff from
+     * @param x the x position of the element
+     * @param y the y position of the element
+    */
+    public void renderElement(GuiGraphics graphics, Player player, int x, int y) {
+        setPos(x, y); //set the position
+        renderElement(graphics, player); //render element logic
+    }
+
+
+    //============================== Positioning / Sizing ==============================\\
     //=========== Positioning ===========\\
     /**
-     * Set the position of the component
+     * Set the position of the Element (used in HudRenderer)
      * @param x the x position
      * @param y the y position
     */
@@ -62,88 +85,63 @@ public abstract class BaseHudElement {
         this.y = y;
     }
 
+    //=========== Sizing ===========\\
     /**
-     * Get's the Base X position which is the X position with the offset 
-     * @return the X Pos (x + xOffset)
+     * Get's the Elements Width (width needs to be set by subclass)
+     * @return the Width
     */
-    public int getX() {return x + xOffset;} //get X Base position
+    public int getWidth() {return width;}
 
     /**
-     * Get's the Base Y position which is the Y position with the offset 
-     * @return the Y Pos (y + yOffset)
+     * Get's the Elements Height (height needs to be set by subclass)
+     * @return the Height
     */
-    public int getY() {return y + yOffset;} //get Y Base position
+    public int getHeight() {return height;}
+    
 
+    //============================== Renderer Helpers ==============================\\
+    //=========== General Rendering ===========\\
+    /**
+     * render something on a different zIndex
+     * @param zIndex the zIndex to render on
+     * @param render the render logic
+    */
+    public void zIndex(int zIndex, Runnable render) {
+        graphics.pose().pushPose(); //push pose
+        graphics.pose().translate(0, 0, zIndex); //translate
+        render.run(); //run the render logic
+        graphics.pose().popPose(); //pop pose
+    }
 
-    //=========== Renderer Helpers ===========\\
+    //=========== Texture Rendering ===========\\
     /**
      * Render a simple texture with the given width and height
-     * @param graphics the GuiGraphics instance to render stuff
      * @param texture the texture to render
      * @param width the width of the texture
      * @param height the height of the texture
      * @param x the x position
      * @param y the y position
+     * @see renderSimpleTexture(ResourceLocation texture, int width, int height, int x, int y, int zIndex) with zIndex
      */
-    public void renderSimpleTexture(GuiGraphics graphics, ResourceLocation texture, int width, int height, int x, int y) {
+    public void renderSimpleTexture(ResourceLocation texture, int width, int height, int x, int y) {
         graphics.blit(texture, x, y, 0, 0, width, height, width, height);
     }
     
     /**
      * Render a simple texture with the given width and height and zIndex
-     * @param graphics the GuiGraphics instance to render stuff
      * @param texture the texture to render
      * @param width the width of the texture
      * @param height the height of the texture
      * @param x the x position
      * @param y the y position
      * @param zIndex the zIndex of the texture
+     * @see renderSimpleTexture(ResourceLocation texture, int width, int height, int x, int y) without zIndex
     */
-    public void renderSimpleTexture(GuiGraphics graphics, ResourceLocation texture, int width, int height, int x, int y, int zIndex) {
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, zIndex);
-        renderSimpleTexture(graphics, texture, x, y, width, height);
-        graphics.pose().popPose();
+    public void renderSimpleTexture(ResourceLocation texture, int width, int height, int x, int y, int zIndex) {
+        zIndex(zIndex, () -> renderSimpleTexture(texture, width, height, x, y)); //render the texture with zIndex
     }
-
-    /**
-     * Render a simple texture with the given width and height and zIndex
-     * @param graphics the GuiGraphics instance to render stuff
-     * @param texture the texture to render
-     * @param textureStartX the x position on the texture we want to start rendering from
-     * @param textureStartY the y position on the texture we want to start rendering from
-     * @param textureWidth the width of the texture we want to render
-     * @param textureHeight the height of the texture we want to render
-     * @param width the width of the element
-     * @param height the height of the element
-     * @param x the x position
-     * @param y the y position
-    */
-    public void renderSimpleTexture(GuiGraphics graphics, ResourceLocation texture, int textureStartX, int textureStartY, int textureWidth, int textureHeight, int width, int height, int x, int y) {
-        graphics.blit(texture, x, y, textureStartX, textureStartY, textureWidth, textureHeight, width, height);
-    }
-
-    /**
-     * Render a simple texture with the given width and height and zIndex
-     * @param graphics the GuiGraphics instance to render stuff
-     * @param texture the texture to render
-     * @param textureStartX the x position on the texture we want to start rendering from
-     * @param textureStartY the y position on the texture we want to start rendering from
-     * @param textureWidth the width of the texture we want to render
-     * @param textureHeight the height of the texture we want to render
-     * @param width the width of the element
-     * @param height the height of the element
-     * @param x the x position
-     * @param y the y position
-     * @param zIndex the zIndex of the texture
-    */
-    public void renderSimpleTexture(GuiGraphics graphics, ResourceLocation texture, int textureStartX, int textureStartY, int textureWidth, int textureHeight, int width, int height, int x, int y, int zIndex) {
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, zIndex);
-        renderSimpleTexture(graphics, texture, textureStartX, textureStartY, textureWidth, textureHeight, width, height, x, y);
-        graphics.pose().popPose();
-    }
-
+    
+    //=========== Text ===========\\
     /**
      * get's the font instance for rendering text
      * @return the font instance

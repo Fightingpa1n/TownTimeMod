@@ -6,10 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 public abstract class BaseBarElement extends BaseHudElement {
     protected float maxValue = 0.0F; //max value of the bar
     protected float value = 0.0F; //value of the bar
-
-    public BaseBarElement(int xOffset, int yOffset) {super(xOffset, yOffset);} //constructor
-
-
+    
     /**
      * Renders the filled portion of the bar based on the current value.
      * @param graphics The graphics object to render with.
