@@ -3,6 +3,9 @@ package net.fightingpainter.mc.towntime.hud.elements;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
+import toughasnails.api.temperature.ITemperature;
+import toughasnails.api.temperature.TemperatureHelper;
+import toughasnails.api.temperature.TemperatureLevel;
 
 import org.checkerframework.checker.units.qual.t;
 
@@ -31,26 +34,27 @@ public class HealthBar extends BaseBarElement {
         this.maxValue = player.getMaxHealth();
         this.value = player.getHealth();
 
-        boolean regenerating = player.hasEffect(MobEffects.REGENERATION); //check if player is regenerating
-        boolean poisoned = player.hasEffect(MobEffects.POISON); //check if player is poisoned
-        boolean withered = player.hasEffect(MobEffects.WITHER); //check if player is withered
-        boolean drowning = player.getAirSupply() <= 0; //check if player is drowning
-        boolean freezing = player.isFullyFrozen(); //check if player is freezing
-
-
-        this.variant = HealthBarVariant.NORMAL; //set variant to normal
+        //sorted by priority
+        if (player.isOnFire() && !player.hasEffect(MobEffects.FIRE_RESISTANCE)) {this.variant = HealthBarVariant.BURNING;} //set variant to burning
+        else if (player.hasEffect(MobEffects.WITHER)) {this.variant = HealthBarVariant.WITHER;} //set variant to wither
+        else if (player.getAirSupply() <= 0) {this.variant = HealthBarVariant.DROWNING;} //set variant to drowning
+        else if (player.isFullyFrozen()) {this.variant = HealthBarVariant.FREEZING;} //set variant to freezing
+        else if (TemperatureHelper.isFullyHyperthermic(player)) {this.variant = HealthBarVariant.OVERHEATING;} //set variant to overheating
+        else if (player.hasEffect(MobEffects.POISON)) {this.variant = HealthBarVariant.POISON;} //set variant to poison
+        else if (player.hasEffect(MobEffects.REGENERATION)) {this.variant = HealthBarVariant.REGENERATION;} //set variant to regeneration
+        else {this.variant = HealthBarVariant.NORMAL;} //set variant to normal
     }
-
+    
     @Override
     public void render() { //render health bar
         renderSimpleTexture(BACKGROUND, 130, 11, x, y); //render background
+        
         int textureWidth = 130; //set texture width
-        int textureHeight = 11; //set texture height
-        renderPartialTexture(TEXTURE, textureWidth, textureHeight, variant.heartX, variant.heartY, variant.heartWidth, variant.heartHeight, x, y); //render heart
-        renderBarLeft(TEXTURE, textureWidth, textureHeight, variant.barX, variant.barY, variant.barWidth, variant.barHeight, x, y); //render health bar
+        int textureHeight = 79; //set texture height
+        renderPartialTexture(TEXTURE, textureWidth, textureHeight, variant.heartX, variant.heartY, variant.heartWidth, variant.heartHeight, x+1, y+1); //render heart
+        renderBarLeft(TEXTURE, textureWidth, textureHeight, variant.barX, variant.barY, variant.barWidth, variant.barHeight, x+9, y+3); //render health bar
     }
-
-
+    
     private enum HealthBarVariant {
         NORMAL( //normal health bar
             0, 0, 9, 9, //heart
@@ -76,21 +80,13 @@ public class HealthBar extends BaseBarElement {
             0, 50, 9, 9, //heart
             10, 50, 120, 5 //bar
         ),
-        HYPOTHERMIA( //hypothermia (from Tough As Nails)
-            0, 60, 9, 9, //heart
-            10, 60, 120, 5 //bar
-        ),
         OVERHEATING( //overheating/hypertermia (from Tough As Nails)
-            0, 70, 9, 9, //heart
+            0, 60, 9, 9, //heart
             10, 70, 120, 5 //bar
         ),
         BURNING( //burning
-            0, 80, 9, 9, //heart
+            0, 70, 9, 9, //heart
             10, 80, 120, 5 //bar
-        ),
-        SOUL_BURNING( //burning from soul fire.
-            0, 90, 9, 9, //heart
-            10, 90, 120, 5 //bar
         );
 
         public final int heartX; //heart portion u

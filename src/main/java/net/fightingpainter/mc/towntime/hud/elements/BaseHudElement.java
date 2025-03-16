@@ -130,20 +130,6 @@ public abstract class BaseHudElement {
     protected void renderSimpleTexture(ResourceLocation texture, int width, int height, int x, int y) {
         graphics.blit(texture, x, y, 0, 0, width, height, width, height);
     }
-    
-    /**
-     * Render a simple texture with the given width and height and zIndex
-     * @param texture the texture to render
-     * @param width the width of the texture
-     * @param height the height of the texture
-     * @param x The x-coordinate where the texture should be rendered
-     * @param y The y-coordinate where the texture should be rendered
-     * @param zIndex the zIndex of the texture
-     * @see renderSimpleTexture(ResourceLocation texture, int width, int height, int x, int y) without zIndex
-    */
-    protected void renderSimpleTexture(ResourceLocation texture, int width, int height, int x, int y, int zIndex) {
-        zIndex(zIndex, () -> renderSimpleTexture(texture, width, height, x, y)); //render the texture with zIndex
-    }
 
     /**
      * Render a partial texture with the given width and height
@@ -159,7 +145,7 @@ public abstract class BaseHudElement {
      * @see renderPartialTexture(ResourceLocation texture, int textureWidth, int textureHeight, int u, int v, int width, int height, int x, int y, int zIndex) with zIndex
     */
     protected void renderPartialTexture(ResourceLocation texture, int textureWidth, int textureHeight, int u, int v, int width, int height, int x, int y) {
-        graphics.blit(texture, x, y, u, v, width, height, textureWidth, textureHeight);
+        graphics.blit(texture, x, y, (float)u, (float)v, width, height, textureWidth, textureHeight);
     }
 
     //=========== Text ===========\\ (text helpers don't have zIndex variants as that would be way to many helper methods)
