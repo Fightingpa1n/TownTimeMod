@@ -16,7 +16,7 @@ public abstract class BaseBarElement extends BaseHudElement {
     */
     protected int calculateFill(float value, float maxValue, int barLength) {
         value = Math.max(0.0f, Math.min(maxValue, value)); //clamp value
-        int result = (int) (barLength * (value / maxValue)); //calculate fill amount
+        int result = Math.round(barLength * (value / maxValue)); //calculate fill amount
         return Math.max(0, Math.min(barLength, result)); //clamp result to be within the bar length (shouldn't happen, but just in case)
     }
     

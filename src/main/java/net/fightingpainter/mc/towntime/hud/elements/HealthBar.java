@@ -7,8 +7,6 @@ import toughasnails.api.temperature.ITemperature;
 import toughasnails.api.temperature.TemperatureHelper;
 import toughasnails.api.temperature.TemperatureLevel;
 
-import org.checkerframework.checker.units.qual.t;
-
 import net.fightingpainter.mc.towntime.TownTime;
 
 
@@ -53,11 +51,17 @@ public class HealthBar extends BaseBarElement {
         int textureHeight = 79; //set texture height
         renderPartialTexture(TEXTURE, textureWidth, textureHeight, variant.heartX, variant.heartY, variant.heartWidth, variant.heartHeight, x+1, y+1); //render heart
         renderBarLeft(TEXTURE, textureWidth, textureHeight, variant.barX, variant.barY, variant.barWidth, variant.barHeight, x+9, y+3); //render health bar
+
+        TextElement valueText = new TextElement(Math.round(this.value) + "/" + Math.round(this.maxValue));
+        valueText.alignCenter(); //center align
+        valueText.setScale(0.6f); //scale down
+        valueText.setYShift(1); //shift down
+        renderText(valueText, (x+9)+(variant.barWidth/2), (y+3)+(variant.barHeight/2)); //render text
     }
     
     private enum HealthBarVariant {
         NORMAL( //normal health bar
-            0, 0, 9, 9, //heart
+            0, 0, 9, 9, //heart 
             10, 0, 120, 5 //bar    
         ),
         REGENERATION( //regeneration

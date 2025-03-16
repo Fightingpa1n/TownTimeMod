@@ -10,8 +10,7 @@ import net.fightingpainter.mc.towntime.TownTime;
 
 
 public class TemperatureDisplay extends BaseHudElement {
-    private final static ResourceLocation TEMPERATURE_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/temperature.png");
-    private final static ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/temperature_background.png");
+    private final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/temperature.png");
     private int textureOffset = 0;
 
     public TemperatureDisplay() {
@@ -49,7 +48,6 @@ public class TemperatureDisplay extends BaseHudElement {
 
     @Override
     public void render() {
-        renderSimpleTexture(BACKGROUND_TEXTURE, 16, 16, x, y); //render background
-        renderPartialTexture(TEMPERATURE_TEXTURE, 80, 16, 16*textureOffset, 0, 16, 16, x, y);
+        renderPartialTexture(TEXTURE, 80, 16, 16*textureOffset, 0, 16, 16, x, y);
     }
 }

@@ -7,6 +7,8 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
+import org.checkerframework.checker.units.qual.g;
+
 import net.fightingpainter.mc.towntime.TownTime;
 import net.fightingpainter.mc.towntime.hud.elements.*;
 
@@ -17,6 +19,7 @@ public class HudRenderer {
     private static final int HudTextureHeight = 60;
     
     private static final BaseHudElement hotbar = new Hotbar(); //create hotbar element
+    private static final BaseHudElement offhand = new Offhand(); //create offhand slot element
 
     private static final BaseHudElement healthBar = new HealthBar(); //create health bar element
     private static final BaseHudElement hungerBar = new HungerBar(); //create hunger bar element
@@ -25,6 +28,10 @@ public class HudRenderer {
     private static final BaseHudElement temperatureDisplay = new TemperatureDisplay(); //create temperature display element
     private static final BaseHudElement armorDisplay = new ArmorDisplay(); //create armor display element
     private static final BaseHudElement absorbtionDisplay = new AbsorbtionDisplay(); //create absorbtion display element
+
+    private static final BaseHudElement airBar = new AirBar(); //create air bar element
+    private static final BaseHudElement mountBar = new MountBar(); //create mount bar element
+    private static final BaseHudElement jumpBar = new JumpBar(); //create jump bar element
 
     public static void render(GuiGraphics graphics) {
         Minecraft minecraft = Minecraft.getInstance(); //get instance
@@ -38,19 +45,22 @@ public class HudRenderer {
         int hudY = graphics.guiHeight() - HudTextureHeight;
         graphics.blit(HudBackground, hudX, hudY, 0, 0, HudTextureWidth, HudTextureHeight, HudTextureWidth, HudTextureHeight); //render background
 
-        int centerX = graphics.guiWidth() / 2; //center x
-
         //the hotbar should be bottom center
-        hotbar.renderElement(graphics, player, centerX - (hotbar.getWidth()/2), graphics.guiHeight() - hotbar.getHeight()); //render hotbar
-
+        int hotbarX = (graphics.guiWidth() / 2) - (hotbar.getWidth()/2); //hotbar x
+        int hotbarY = graphics.guiHeight() - hotbar.getHeight(); //hotbar y
+        
         //the bars should be on the bottom left
         int barX = 2; //bar x
         int barY = graphics.guiHeight() - 2; //bar y
-        
+
         //overlay fix
-        if (barX + healthBar.getWidth() >= centerX-(hotbar.getWidth()/2)) {
-            barY -= hotbar.getHeight(); //decrease y by hotbar height so instead of ovelapping it will be above the hotbar
+        if (barX + healthBar.getWidth() > (hotbarX-offhand.getWidth())+1) { //if overlap could occur
+            // barX = hotbarX - healthBar.getWidth() - 2; //move bars up
+            hotbarX = graphics.guiWidth() - hotbar.getWidth(); //right aligned hotbar
         }
+
+        offhand.renderElement(graphics, player, (hotbarX - offhand.getWidth())+1, hotbarY); //render offhand slot (render before hotbar so the hotbar is above the offhand slot)
+        hotbar.renderElement(graphics, player, hotbarX, hotbarY); //render hotbar
 
         barY -= healthBar.getHeight(); //decrease y by health bar height
         healthBar.renderElement(graphics, player, barX, barY); //render health bar
@@ -73,10 +83,16 @@ public class HudRenderer {
             displayX += armorDisplay.getWidth() + 2; //increase x by armor display width and 2 (for spacing)
         }
         absorbtionDisplay.renderElement(graphics, player, displayX, displayY); //render absorbtion display
+
+        //render extra bars
+        airBar.renderElement(graphics, player, (graphics.guiWidth()-airBar.getWidth())/2, graphics.guiHeight() - (hotbar.getHeight() + airBar.getHeight() + 20)); //render air bar
+        mountBar.renderElement(graphics, player, 2, graphics.guiHeight()-(mountBar.getHeight()+45)); //render mount bar
+        jumpBar.renderElement(graphics, player, graphics.guiWidth()-jumpBar.getWidth()-2, (graphics.guiHeight()-jumpBar.getHeight())/2); //render jump bar
         
         graphics.pose().popPose(); //pop pose
     }
 
+    
     public static void xpBarRenderer(Screen screen, GuiGraphics graphics) {
         if (screen instanceof InventoryScreen) {
             // xpBar.getParameters(Minecraft.getInstance().player);

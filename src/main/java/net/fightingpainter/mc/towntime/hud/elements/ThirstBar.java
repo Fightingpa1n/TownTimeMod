@@ -9,13 +9,13 @@ import net.fightingpainter.mc.towntime.TownTime;
 
 
 public class ThirstBar extends BaseBarElement{
-    private final static ResourceLocation NORMAL_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/thirst.png");
-    private final static ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/thirst_background.png");
+    private final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/thirst.png");
+    private final static ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/thirst_background.png");
     
     private ThirstBarVariant variant = ThirstBarVariant.NORMAL;
 
     public ThirstBar() { //set size
-        this.width = 68;
+        this.width = 87;
         this.height = 9;
     }
     
@@ -37,22 +37,28 @@ public class ThirstBar extends BaseBarElement{
 
     @Override
     public void render() {
-        renderSimpleTexture(BACKGROUND_TEXTURE, 68, 9, x, y); //render background
+        renderSimpleTexture(BACKGROUND, 87, 9, x, y); //render background
 
-        int textureWidth = 68; //set texture width
+        int textureWidth = 88; //set texture width
         int textureHeight = 15; //set texture height
-        renderPartialTexture(NORMAL_TEXTURE, textureWidth, textureHeight, variant.dropletX, variant.dropletY, variant.dropletWidth, variant.dropletHeight, x+1, y+1); //render droplet
-        renderBarLeft(NORMAL_TEXTURE, textureWidth, textureHeight, variant.barX, variant.barY, variant.barWidth, variant.barHeight, x+7, y+3); //render thirst bar
+        renderPartialTexture(TEXTURE, textureWidth, textureHeight, variant.dropletX, variant.dropletY, variant.dropletWidth, variant.dropletHeight, x+1, y+1); //render droplet
+        renderBarLeft(TEXTURE, textureWidth, textureHeight, variant.barX, variant.barY, variant.barWidth, variant.barHeight, x+6, y+2); //render thirst bar
+
+        TextElement valueText = new TextElement(Math.round(this.value) + "/" + Math.round(this.maxValue));
+        valueText.alignCenter(); //center align
+        valueText.setScale(0.5f); //scale down
+        valueText.setYShift(1); //shift down
+        renderText(valueText, (x+6)+(variant.barWidth/2), (y+2)+(variant.barHeight/2)); //render text
     }
 
     private enum ThirstBarVariant {
         NORMAL( //normal thirst bar
             0, 0, 7, 7, //droplet
-            8, 0, 60, 3 //bar
+            8, 0, 80, 5 //bar
         ),
         THIRST(
             0, 8, 7, 7, //droplet
-            8, 8, 60, 3 //bar
+            8, 8, 80, 5 //bar
         );
 
         public final int dropletX;

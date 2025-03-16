@@ -15,6 +15,8 @@ public class TextElement {
     private String text; //the text to render
     private Font font; //the font to render the text with
     private int color; //the color of the text
+    private float scale = 1.0f; //the scale of the text
+    private int yShift = 0; //the y shift of the text
     private AlignH horizontalAlignment; //the horizontal alignment of the text
     private AlignV verticalAlignment; //the vertical alignment of the text
 
@@ -112,6 +114,26 @@ public class TextElement {
     */
     public TextElement setColor(int color) {
         this.color = color;
+        return this;
+    }
+
+    /**
+     * sets the scale of the TextElement
+     * @param scale The scale it should use
+     * @return itself (for chaining)
+    */
+    public TextElement setScale(float scale) {
+        this.scale = scale;
+        return this;
+    }
+
+    /**
+     * sets the y shift of the TextElement (changing the scale might result in the text not being centered corectly, this can be used to manually adjust it)
+     * @param yShift The y shift it should use
+     * @return itself (for chaining)
+    */
+    public TextElement setYShift(int yShift) {
+        this.yShift = yShift;
         return this;
     }
 
@@ -222,20 +244,23 @@ public class TextElement {
 
     //============================== Rendering ==============================\\
     public void render (GuiGraphics graphics, int x, int y) {
-        int textWidth = font.width(text);
-        int textHeight = font.lineHeight;
+        float textWidth = font.width(text) * scale;
+        float textHeight = 8 * scale;
 
         int textX = 0; //init textX
-        if (horizontalAlignment == AlignH.LEFT) {textX = x;}
-        else if (horizontalAlignment == AlignH.CENTER) {textX = x - textWidth / 2;}
-        else if (horizontalAlignment == AlignH.RIGHT) {textX = x - textWidth;}
+        if (horizontalAlignment == AlignH.LEFT) {textX = (int)(x / scale);}
+        else if (horizontalAlignment == AlignH.CENTER) {textX = (int)((x - textWidth / 2) / scale);}
+        else if (horizontalAlignment == AlignH.RIGHT) {textX = (int)((x - textWidth) / scale);}
 
         int textY = 0; //init textY
-        if (verticalAlignment == AlignV.TOP) {textY = y;}
-        else if (verticalAlignment == AlignV.CENTER) {textY = y - textHeight / 2;}
-        else if (verticalAlignment == AlignV.BOTTOM) {textY = y - textHeight;}
+        if (verticalAlignment == AlignV.TOP) {textY = (int)(y / scale);}
+        else if (verticalAlignment == AlignV.CENTER) {textY = (int)((y - textHeight / 2) / scale);}
+        else if (verticalAlignment == AlignV.BOTTOM) {textY = (int)((y - textHeight) / scale);}
 
-        graphics.drawString(font, text, textX, textY, color);
+        graphics.pose().pushPose(); //push pose
+        graphics.pose().scale(scale, scale, 1); //scale
+        graphics.drawString(font, text, textX, textY+yShift, color);
+        graphics.pose().popPose(); //pop pose
     }
 
     //============================== Alignments ==============================\\

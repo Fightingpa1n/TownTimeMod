@@ -33,6 +33,8 @@ public class Client {
             || overlay == VanillaGuiLayers.VEHICLE_HEALTH
             || overlay == VanillaGuiLayers.HOTBAR
             || overlay == VanillaGuiLayers.ARMOR_LEVEL
+            || overlay == VanillaGuiLayers.SELECTED_ITEM_NAME
+            || overlay == VanillaGuiLayers.JUMP_METER
         ) {event.setCanceled(true);}
 
         // if (!AsteorBar.config.enableOverlay()) return;

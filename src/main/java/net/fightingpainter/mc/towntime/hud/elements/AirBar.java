@@ -8,16 +8,17 @@ import net.fightingpainter.mc.towntime.TownTime;
 
 public class AirBar extends BaseBarElement {
     private final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/air.png");
-    private final static ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/air_background.png");
 
     public AirBar() { //set size
-        this.width = 68;
-        this.height = 9;
+        this.width = 130;
+        this.height = 11;
     }
 
     @Override
     public boolean shouldRender(Player player) {
-        return player.isUnderWater();
+        if (player.isCreative() || player.isSpectator()) {return false;} //check gamemode
+        if (player.getAirSupply() >= player.getMaxAirSupply()) {return false;} //check air supply
+        return true;
     }
 
     @Override
@@ -28,8 +29,9 @@ public class AirBar extends BaseBarElement {
 
     @Override
     public void render() {
-        renderSimpleTexture(BACKGROUND_TEXTURE, 68, 9, x, y);
-        renderBarRight(TEXTURE, 60, 3, x+7, y+3);
+        int textureWidth = 130; //set texture width
+        int textureHeight = 22; //set texture height
+        renderPartialTexture(TEXTURE, textureWidth, textureHeight, 0, 0, 130, 11, x, y); //render air bar background
+        renderBarLeft(TEXTURE, textureWidth, textureHeight, 9, 14, 120, 5, x+9, y+3); //render air bar
     }
-    
 }
