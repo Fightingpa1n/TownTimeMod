@@ -1,6 +1,5 @@
 package net.fightingpainter.mc.towntime.hud.bars;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -15,23 +14,26 @@ public class HealthBar extends BaseBarElement {
     private final static ResourceLocation BURNING = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/health_burning.png");
     private final static ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/health_background.png");
 
-    public HealthBar(int x, int y) {super(x, y);} //constructor
+    public HealthBar() { //set size
+        this.width = 130;
+        this.height = 11;
+    }
     
     @Override
-    public boolean shouldRender(Player player) {//check gamemode
+    public boolean shouldRender(Player player) { //check gamemode
         if (player.isCreative() || player.isSpectator()) {return false;}
         else {return true;}
     }
     
     @Override
-    public void getParameters(Player player) {
+    public void getParameters(Player player) { //get health values
         this.maxValue = player.getMaxHealth();
         this.value = player.getHealth();
     }
 
     @Override
-    public void render(GuiGraphics graphics) {
-        renderSimpleTexture(graphics, BACKGROUND, 130, 11, getX(), getY()); //render background
-        renderBarRight(graphics, NORMAL, 120, 5, getX()+1, getY()+3); //render health bar
+    public void render() { //render health bar
+        renderSimpleTexture(BACKGROUND, 130, 11, x, y); //render background
+        renderBarLeft(NORMAL, 120, 5, x+9, y+3); //render health bar
     }
 }

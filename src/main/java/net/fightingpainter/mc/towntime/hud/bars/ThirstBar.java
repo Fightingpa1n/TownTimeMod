@@ -2,16 +2,18 @@ package net.fightingpainter.mc.towntime.hud.bars;
 
 import net.fightingpainter.mc.towntime.TownTime;
 import net.fightingpainter.mc.towntime.hud.BaseBarElement;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import toughasnails.api.thirst.ThirstHelper;
 
 public class ThirstBar extends BaseBarElement{
-    private final static ResourceLocation NORMAL = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/thirst.png");
-    private final static ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/thirst_background.png");
+    private final static ResourceLocation NORMAL_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/thirst.png");
+    private final static ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/thirst_background.png");
     
-    public ThirstBar(int x, int y) {super(x, y);} //constructor
+    public ThirstBar() { //set size
+        this.width = 68;
+        this.height = 9;
+    }
     
     @Override
     public boolean shouldRender(Player player) {//check gamemode
@@ -26,8 +28,8 @@ public class ThirstBar extends BaseBarElement{
     }
 
     @Override
-    public void render(GuiGraphics graphics) {
-        renderSimpleTexture(graphics, BACKGROUND, 68, 9, getX(), getY()); //render background
-        renderBarRight(graphics, NORMAL, 60, 3, getX()+1, getY()+3); //render thirst bar
+    public void render() {
+        renderSimpleTexture(BACKGROUND_TEXTURE, 68, 9, x, y); //render background
+        renderBarLeft(NORMAL_TEXTURE, 60, 3, x+7, y+3); //render thirst bar
     }
 }

@@ -11,13 +11,16 @@ import net.fightingpainter.mc.towntime.hud.BaseHudElement;
 
 
 public class Hotbar extends BaseHudElement {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/hotbar.png");
-    private static final ResourceLocation SELECTED_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/hotbar_selected.png");
+    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/hotbar.png"); //hotbar/background texture
+    private static final ResourceLocation SELECTED_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/hotbar_selected.png"); //selected slot texture
     
-    private ItemStack[] items = new ItemStack[9];
-    private int selected = 0;
+    private ItemStack[] items = new ItemStack[9]; //hotbar items
+    private int selected = 0; //selected slot
     
-    public Hotbar(int xOffset, int yOffset) {super(xOffset, yOffset);} //constructor
+    public Hotbar() { //set size
+        this.width = 172;
+        this.height = 20;
+    }
 
     @Override
     public boolean shouldRender(Player player) { //should render
@@ -33,17 +36,18 @@ public class Hotbar extends BaseHudElement {
     }
     
     @Override
-    public void render(GuiGraphics graphics) {
-        renderSimpleTexture(graphics, TEXTURE, 172, 20, getX(), getY()); //render hotbar texture
+    public void render() { //render hotbar
+        renderSimpleTexture(BACKGROUND_TEXTURE, 172, 20, x, y); //render hotbar/background texture
 
         for (int i = 0; i < 9; i++) {
-            int slotX = (getX() + i * 19); //slot x
+            int slotX = (x + i * 19); //slot x
             if (i == selected) { //if slot is selected render selected texture
-                renderSimpleTexture(graphics, SELECTED_TEXTURE, 20, 20, slotX, getY());
+                renderSimpleTexture(SELECTED_TEXTURE, 20, 20, slotX, y);
             }
-            renderSlot(graphics, slotX+2, getY()+2, items[i]); //render slot (+2 to center item in slot)
+            renderSlot(graphics, slotX+2, y+2, items[i]); //render slot (+2 to center item in slot)
         }
 
+        //Render Active Item Name (TODO: IDK WHERE CURRENTLY. ABOVE IS ALREADY OCCUPIED BY OTHER STUFF)
         // if (!items[active].isEmpty()) { //if active item exists render name above hotbar
         //     Component name = items[active].getHoverName();
         //     int textWidth = font.width(name);
@@ -53,10 +57,10 @@ public class Hotbar extends BaseHudElement {
         // }
     }
 
-    private void renderSlot(GuiGraphics graphics, int x, int y, ItemStack item) {
+    private void renderSlot(GuiGraphics graphics, int slotX, int slotY, ItemStack item) { //render slot
         if (!item.isEmpty()) { //if item...
-            graphics.renderItem(item, x, y); //render item
-            graphics.renderItemDecorations(getFont(), item, x, y); //render item decorations (enchantments, etc)
+            graphics.renderItem(item, slotX, slotY); //render item
+            graphics.renderItemDecorations(getFont(), item, slotX, slotY); //render item decorations (count, durrability, enchantments, etc.)
         }
     }
 }

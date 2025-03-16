@@ -15,9 +15,9 @@ import net.minecraft.world.entity.player.Player;
  * @see #render()
 */
 public abstract class BaseHudElement {
-    private GuiGraphics graphics; //graphics instance
-    private int width, height; //width and height
-    private int x, y; //x and y position
+    protected GuiGraphics graphics; //graphics instance
+    protected int width, height; //width and height
+    protected int x, y; //x and y position
 
     //============================== Subclass Methods ==============================\\
     //=========== Abstract Methods ===========\\
@@ -71,7 +71,7 @@ public abstract class BaseHudElement {
         setPos(x, y); //set the position
         renderElement(graphics, player); //render element logic
     }
-
+    
 
     //============================== Positioning / Sizing ==============================\\
     //=========== Positioning ===========\\
@@ -140,7 +140,7 @@ public abstract class BaseHudElement {
     public void renderSimpleTexture(ResourceLocation texture, int width, int height, int x, int y, int zIndex) {
         zIndex(zIndex, () -> renderSimpleTexture(texture, width, height, x, y)); //render the texture with zIndex
     }
-    
+
     //=========== Text ===========\\
     /**
      * get's the font instance for rendering text

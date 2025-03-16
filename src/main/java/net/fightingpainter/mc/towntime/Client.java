@@ -35,8 +35,6 @@ public class Client {
             || overlay == VanillaGuiLayers.ARMOR_LEVEL
         ) {event.setCanceled(true);}
 
-
-
         // if (!AsteorBar.config.enableOverlay()) return;
         // ResourceLocation overlay = event.getName();
         // if (overlay == VanillaGuiLayers.PLAYER_HEALTH) {

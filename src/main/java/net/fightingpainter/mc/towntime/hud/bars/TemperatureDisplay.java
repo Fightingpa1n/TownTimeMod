@@ -2,9 +2,6 @@ package net.fightingpainter.mc.towntime.hud.bars;
 
 import net.fightingpainter.mc.towntime.TownTime;
 import net.fightingpainter.mc.towntime.hud.BaseHudElement;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import toughasnails.api.temperature.ITemperature;
@@ -12,11 +9,14 @@ import toughasnails.api.temperature.TemperatureHelper;
 import toughasnails.api.temperature.TemperatureLevel;
 
 public class TemperatureDisplay extends BaseHudElement {
-    private final static ResourceLocation TEMPERATURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/temperature.png");
-    private final static ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/temperature_background.png");
+    private final static ResourceLocation TEMPERATURE_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/temperature.png");
+    private final static ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/temperature_background.png");
     private int textureOffset = 0;
 
-    public TemperatureDisplay(int x, int y) {super(x, y);} //constructor
+    public TemperatureDisplay() {
+        this.width = 16;
+        this.height = 16;
+    }
     
     @Override
     public boolean shouldRender(Player player) {//check gamemode
@@ -47,8 +47,8 @@ public class TemperatureDisplay extends BaseHudElement {
     }
 
     @Override
-    public void render(GuiGraphics graphics) {
-        renderSimpleTexture(graphics, BACKGROUND, 16, 16, getX(), getY()); //render background
-        graphics.blit(TEMPERATURE, getX(), getY(), textureOffset*16, 0, 16, 16); //render temperature icon
+    public void render() {
+        renderSimpleTexture(BACKGROUND_TEXTURE, 16, 16, x, y); //render background
+        graphics.blit(TEMPERATURE_TEXTURE, x, y, textureOffset*16, 0, 16, 16); //render temperature icon
     }
 }

@@ -16,24 +16,13 @@ public class HudRenderer {
     private static final int HudTextureWidth = 182;
     private static final int HudTextureHeight = 60;
     
-    private static final BaseHudElement hotbar = new Hotbar(9, 39); //create hotbar element
+    private static final BaseHudElement hotbar = new Hotbar(); //create hotbar element
 
-    private static final BaseBarElement healthBar = new HealthBar(51, 26); //create health bar element
-    private static final BaseBarElement hungerBar = new HungerBar(112, 15); //create hunger bar element
-    private static final BaseBarElement thirstBar = new ThirstBar(112, 4); //create thirst bar element
+    private static final BaseHudElement healthBar = new HealthBar(); //create health bar element
+    private static final BaseHudElement hungerBar = new HungerBar(); //create hunger bar element
+    private static final BaseHudElement thirstBar = new ThirstBar(); //create thirst bar element
 
-    private static final BaseHudElement temperatureDisplay = new TemperatureDisplay(92, 5); //create temperature display element
-    /* 
-    private static final HealthBar healthBar = new HealthBar(10, 10);
-    private static final AbsorbtionDisplay absorbtionDisplay = new AbsorbtionDisplay(40, 10);
-    private static final Food foodBar = new Food(10, 30);
-    private static final Thirst thirstBar = new Thirst(50, 30);
-    private static final TemperatureDisplay temperatureDisplay = new TemperatureDisplay(10, 50);
-     */
-    // private static final XpBar xpBar = new XpBar(10, 10);
-
-
-
+    private static final BaseHudElement temperatureDisplay = new TemperatureDisplay(); //create temperature display element
 
     public static void render(GuiGraphics graphics) {
         Minecraft minecraft = Minecraft.getInstance(); //get instance
@@ -47,59 +36,43 @@ public class HudRenderer {
         int hudY = graphics.guiHeight() - HudTextureHeight;
         graphics.blit(HudBackground, hudX, hudY, 0, 0, HudTextureWidth, HudTextureHeight, HudTextureWidth, HudTextureHeight); //render background
         
-        int leftX = 0; //left x
-        int rightX = graphics.guiWidth(); //right x
+        int left = 0; //left x
+        int right = graphics.guiWidth(); //right xs
 
-        int topY = 0; //top y
-        int bottomY = graphics.guiHeight(); //bottom y
+        int top = 0; //top y
+        int bottom = graphics.guiHeight(); //bottom y
         
         int centerX = graphics.guiWidth() / 2; //center x
         int centerY = graphics.guiHeight() / 2; //center y
 
         //the hotbar should be bottom center
-        hotbar.renderElement(graphics, player, hudX, hudY); //render hotbar
+        hotbar.renderElement(graphics, player, centerX - (hotbar.getWidth()/2), bottom - hotbar.getHeight()); //render hotbar
 
-        healthBar.renderElement(graphics, player, hudX, hudY); //render health bar
-        hungerBar.renderElement(graphics, player, hudX, hudY); //render hunger bar
-        thirstBar.renderElement(graphics, player, hudX, hudY); //render thirst bar
+        //the bars should be on the bottom left
+        int barX = left + 1; //bar x
+        int barY = bottom - 1; //bar y
 
-        temperatureDisplay.renderElement(graphics, player, hudX, hudY); //render temperature display
+        barY -= healthBar.getHeight(); //decrease y by health bar height
+        healthBar.renderElement(graphics, player, barX, barY); //render health bar
 
+        barY -= hungerBar.getHeight() + 1; //decrease y by hunger bar height and 1 (for spacing)
+        hungerBar.renderElement(graphics, player, barX, barY); //render hunger bar
         
-        // if(healthBar.shouldRender(player)) { //if health bar should render
-        //     healthBar.getParameters(player); //get health bar parameters
-        //     healthBar.render(graphics); //render health bar
-        // }
+        barY -= thirstBar.getHeight() + 1; //decrease y by thirst bar height and 1 (for spacing)
+        thirstBar.renderElement(graphics, player, barX, barY); //render thirst bar
+
+        barX += Math.max(thirstBar.getWidth(), hungerBar.getWidth()) + 1; //increase x by the max of health bar width and hunger bar width and 1 (for spacing)
         
-        // if(absorbtionDisplay.shouldRender(player)) { //if absorbtion display should render
-        //     absorbtionDisplay.getParameters(player); //get absorbtion display parameters
-        //     absorbtionDisplay.render(graphics); //render absorbtion display
-        // }
-        
-        // if(foodBar.shouldRender(player)) { //if food bar should render
-        //     foodBar.getParameters(player); //get food bar parameters
-        //     foodBar.render(graphics); //render food bar
-        // }
-        
-        // if(thirstBar.shouldRender(player)) { //if thirst bar should render
-        //     thirstBar.getParameters(player); //get thirst bar parameters
-        //     thirstBar.render(graphics); //render thirst bar
-        // }
-        
-        // if (temperatureDisplay.shouldRender(player)) { //if temperature display should render
-        //     temperatureDisplay.getParameters(player); //get temperature display parameters
-        //     temperatureDisplay.render(graphics); //render temperature display
-        // }
-        
-        // if (hotbar.shouldRender(player)) { //if hotbar should render
-        //     hotbar.getParameters(player); //get hotbar parameters
-        //     hotbar.render(graphics); //render hotbar
-        // }
+        int thirstAndHungerBarHeight = thirstBar.getHeight() + hungerBar.getHeight() + 1; //thirst bar height + hunger bar height + 1 (for spacing)
+        int thirstAndHungerBarCenter = barY + (thirstAndHungerBarHeight / 2); //thirst and hunger bar center
+        // int temperatureDisplay = 
+
+
+        temperatureDisplay.renderElement(graphics, player, barX, barY); //render temperature display
 
         graphics.pose().popPose(); //pop pose
     }
-    
-    
+
     public static void xpBarRenderer(Screen screen, GuiGraphics graphics) {
         if (screen instanceof InventoryScreen) {
             // xpBar.getParameters(Minecraft.getInstance().player);
