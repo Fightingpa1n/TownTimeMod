@@ -1,13 +1,12 @@
-package net.fightingpainter.mc.towntime.hud.bars;
+package net.fightingpainter.mc.towntime.hud.elements;
 
-import net.fightingpainter.mc.towntime.TownTime;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import net.fightingpainter.mc.towntime.hud.BaseHudElement;
+import net.fightingpainter.mc.towntime.TownTime;
 
 
 public class Hotbar extends BaseHudElement {
@@ -47,14 +46,14 @@ public class Hotbar extends BaseHudElement {
             renderSlot(graphics, slotX+2, y+2, items[i]); //render slot (+2 to center item in slot)
         }
 
-        //Render Active Item Name (TODO: IDK WHERE CURRENTLY. ABOVE IS ALREADY OCCUPIED BY OTHER STUFF)
-        // if (!items[active].isEmpty()) { //if active item exists render name above hotbar
-        //     Component name = items[active].getHoverName();
-        //     int textWidth = font.width(name);
-        //     int textX = baseX + (width - textWidth) / 2;
-        //     int textY = baseY - 10;
-        //     graphics.drawString(font, name, textX, textY, 0xFFFFFF);
-        // }
+        //Render Active Item Name
+        if (!items[selected].isEmpty()) { //if active item exists render name above hotbar
+            Component name = items[selected].getHoverName();
+            int textWidth = getFont().width(name);
+            int textX = x + (getWidth() - textWidth) / 2;
+            int textY = y - 10;
+            graphics.drawString(getFont(), name, textX, textY, 0xFFFFFF);
+        }
     }
 
     private void renderSlot(GuiGraphics graphics, int slotX, int slotY, ItemStack item) { //render slot

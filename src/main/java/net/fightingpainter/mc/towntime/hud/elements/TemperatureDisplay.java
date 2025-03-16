@@ -1,12 +1,13 @@
-package net.fightingpainter.mc.towntime.hud.bars;
+package net.fightingpainter.mc.towntime.hud.elements;
 
-import net.fightingpainter.mc.towntime.TownTime;
-import net.fightingpainter.mc.towntime.hud.BaseHudElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import toughasnails.api.temperature.ITemperature;
 import toughasnails.api.temperature.TemperatureHelper;
 import toughasnails.api.temperature.TemperatureLevel;
+
+import net.fightingpainter.mc.towntime.TownTime;
+
 
 public class TemperatureDisplay extends BaseHudElement {
     private final static ResourceLocation TEMPERATURE_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/temperature.png");
@@ -49,6 +50,6 @@ public class TemperatureDisplay extends BaseHudElement {
     @Override
     public void render() {
         renderSimpleTexture(BACKGROUND_TEXTURE, 16, 16, x, y); //render background
-        graphics.blit(TEMPERATURE_TEXTURE, x, y, textureOffset*16, 0, 16, 16); //render temperature icon
+        renderPartialTexture(TEMPERATURE_TEXTURE, 80, 16, 16*textureOffset, 0, 16, 16, x, y);
     }
 }

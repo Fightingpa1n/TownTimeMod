@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import net.fightingpainter.mc.towntime.TownTime;
-import net.fightingpainter.mc.towntime.hud.bars.*;
+import net.fightingpainter.mc.towntime.hud.elements.*;
 
 
 public class HudRenderer {
@@ -23,6 +23,8 @@ public class HudRenderer {
     private static final BaseHudElement thirstBar = new ThirstBar(); //create thirst bar element
 
     private static final BaseHudElement temperatureDisplay = new TemperatureDisplay(); //create temperature display element
+    private static final BaseHudElement armorDisplay = new ArmorDisplay(); //create armor display element
+    private static final BaseHudElement absorbtionDisplay = new AbsorbtionDisplay(); //create absorbtion display element
 
     public static void render(GuiGraphics graphics) {
         Minecraft minecraft = Minecraft.getInstance(); //get instance
@@ -35,41 +37,43 @@ public class HudRenderer {
         int hudX = graphics.guiWidth() - HudTextureWidth;
         int hudY = graphics.guiHeight() - HudTextureHeight;
         graphics.blit(HudBackground, hudX, hudY, 0, 0, HudTextureWidth, HudTextureHeight, HudTextureWidth, HudTextureHeight); //render background
-        
-        int left = 0; //left x
-        int right = graphics.guiWidth(); //right xs
 
-        int top = 0; //top y
-        int bottom = graphics.guiHeight(); //bottom y
-        
         int centerX = graphics.guiWidth() / 2; //center x
-        int centerY = graphics.guiHeight() / 2; //center y
 
         //the hotbar should be bottom center
-        hotbar.renderElement(graphics, player, centerX - (hotbar.getWidth()/2), bottom - hotbar.getHeight()); //render hotbar
+        hotbar.renderElement(graphics, player, centerX - (hotbar.getWidth()/2), graphics.guiHeight() - hotbar.getHeight()); //render hotbar
 
         //the bars should be on the bottom left
-        int barX = left + 1; //bar x
-        int barY = bottom - 1; //bar y
+        int barX = 2; //bar x
+        int barY = graphics.guiHeight() - 2; //bar y
+        
+        //overlay fix
+        if (barX + healthBar.getWidth() >= centerX-(hotbar.getWidth()/2)) {
+            barY -= hotbar.getHeight(); //decrease y by hotbar height so instead of ovelapping it will be above the hotbar
+        }
 
         barY -= healthBar.getHeight(); //decrease y by health bar height
         healthBar.renderElement(graphics, player, barX, barY); //render health bar
 
-        barY -= hungerBar.getHeight() + 1; //decrease y by hunger bar height and 1 (for spacing)
+        barY -= hungerBar.getHeight() + 2; //decrease y by hunger bar height and 1 (for spacing)
         hungerBar.renderElement(graphics, player, barX, barY); //render hunger bar
         
-        barY -= thirstBar.getHeight() + 1; //decrease y by thirst bar height and 1 (for spacing)
+        barY -= thirstBar.getHeight() + 2; //decrease y by thirst bar height and 1 (for spacing)
         thirstBar.renderElement(graphics, player, barX, barY); //render thirst bar
 
-        barX += Math.max(thirstBar.getWidth(), hungerBar.getWidth()) + 1; //increase x by the max of health bar width and hunger bar width and 1 (for spacing)
+        //render displays
+        int displayX = barX + Math.max(thirstBar.getWidth(), hungerBar.getWidth()) + 2; //increase x by the max of health bar width and hunger bar width and 1 (for spacing)
+        int displayY = barY + 2;
+        temperatureDisplay.renderElement(graphics, player, displayX, displayY); //render temperature display
+
+        displayX += temperatureDisplay.getWidth() + 2; //increase x by temperature display width and 2 (for spacing)
+        armorDisplay.renderElement(graphics, player, displayX, displayY); //render armor display
+
+        if (armorDisplay.shouldRender(player)) { //if armor display should render
+            displayX += armorDisplay.getWidth() + 2; //increase x by armor display width and 2 (for spacing)
+        }
+        absorbtionDisplay.renderElement(graphics, player, displayX, displayY); //render absorbtion display
         
-        int thirstAndHungerBarHeight = thirstBar.getHeight() + hungerBar.getHeight() + 1; //thirst bar height + hunger bar height + 1 (for spacing)
-        int thirstAndHungerBarCenter = barY + (thirstAndHungerBarHeight / 2); //thirst and hunger bar center
-        // int temperatureDisplay = 
-
-
-        temperatureDisplay.renderElement(graphics, player, barX, barY); //render temperature display
-
         graphics.pose().popPose(); //pop pose
     }
 

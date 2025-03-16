@@ -1,6 +1,5 @@
 package net.fightingpainter.mc.towntime;
 
-import net.fightingpainter.mc.towntime.hud.HudRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -11,6 +10,7 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.fightingpainter.mc.towntime.hud.HudRenderer;
 
 @EventBusSubscriber(modid=TownTime.MOD_ID, bus = EventBusSubscriber.Bus.GAME, value=Dist.CLIENT)
 public class Client {

@@ -1,10 +1,11 @@
-package net.fightingpainter.mc.towntime.hud.bars;
+package net.fightingpainter.mc.towntime.hud.elements;
 
-import net.fightingpainter.mc.towntime.TownTime;
-import net.fightingpainter.mc.towntime.hud.BaseBarElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import toughasnails.api.thirst.ThirstHelper;
+
+import net.fightingpainter.mc.towntime.TownTime;
+
 
 public class ThirstBar extends BaseBarElement{
     private final static ResourceLocation NORMAL_TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/thirst.png");
