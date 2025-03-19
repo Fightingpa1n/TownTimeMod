@@ -137,6 +137,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     implementation name: 'ToughAsNails-10.1.0.13'
     implementation name: 'GlitchCore-2.1.0.0'
+    implementation name: 'Appleskin-3.0.5'
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
