@@ -1,22 +1,21 @@
 package net.fightingpainter.mc.towntime.hud;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-import org.checkerframework.checker.units.qual.g;
-
 import net.fightingpainter.mc.towntime.TownTime;
 import net.fightingpainter.mc.towntime.hud.elements.*;
 
 
 public class HudRenderer {
-    private static final ResourceLocation HudBackground = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/hud.png");
-    private static final int HudTextureWidth = 182;
-    private static final int HudTextureHeight = 60;
+    // private static final ResourceLocation HudBackground = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/hud.png");
+    // private static final int HudTextureWidth = 182;
+    // private static final int HudTextureHeight = 60;
     
     private static final BaseHudElement hotbar = new Hotbar(); //create hotbar element
     private static final BaseHudElement offhand = new Offhand(); //create offhand slot element
@@ -36,14 +35,15 @@ public class HudRenderer {
     public static void render(GuiGraphics graphics) {
         Minecraft minecraft = Minecraft.getInstance(); //get instance
         Player player = minecraft.player; //get player
+        if (minecraft.options.hideGui) return; //if gui is hidden, return
         if (player == null) return; //if player is null, return
 
         graphics.pose().pushPose(); //push pose
         graphics.pose().translate(0, 0, 50); //translate
 
-        int hudX = graphics.guiWidth() - HudTextureWidth;
-        int hudY = graphics.guiHeight() - HudTextureHeight;
-        graphics.blit(HudBackground, hudX, hudY, 0, 0, HudTextureWidth, HudTextureHeight, HudTextureWidth, HudTextureHeight); //render background
+        // int hudX = graphics.guiWidth() - HudTextureWidth;
+        // int hudY = graphics.guiHeight() - HudTextureHeight;
+        // graphics.blit(HudBackground, hudX, hudY, 0, 0, HudTextureWidth, HudTextureHeight, HudTextureWidth, HudTextureHeight); //render background
 
         //the hotbar should be bottom center
         int hotbarX = (graphics.guiWidth() / 2) - (hotbar.getWidth()/2); //hotbar x
@@ -54,7 +54,7 @@ public class HudRenderer {
         int barY = graphics.guiHeight() - 2; //bar y
 
         //overlay fix
-        if (barX + healthBar.getWidth() > (hotbarX-offhand.getWidth())+1) { //if overlap could occur
+        if (barX+healthBar.getWidth() > hotbarX - offhand.getWidth()) { //if health bar is in the way of the hotbar
             // barX = hotbarX - healthBar.getWidth() - 2; //move bars up
             hotbarX = graphics.guiWidth() - hotbar.getWidth(); //right aligned hotbar
         }
@@ -91,12 +91,29 @@ public class HudRenderer {
         
         graphics.pose().popPose(); //pop pose
     }
-
     
     public static void xpBarRenderer(Screen screen, GuiGraphics graphics) {
         if (screen instanceof InventoryScreen) {
             // xpBar.getParameters(Minecraft.getInstance().player);
             // xpBar.render(graphics);
         }
+    }
+
+
+    public static void clientTick() { //get's called each tick
+        hotbar.tick(); //tick hotbar
+        offhand.tick(); //tick offhand slot
+
+        healthBar.tick(); //tick health bar
+        hungerBar.tick(); //tick hunger bar
+        thirstBar.tick(); //tick thirst bar
+
+        temperatureDisplay.tick(); //tick temperature display
+        armorDisplay.tick(); //tick armor display
+        absorbtionDisplay.tick(); //tick absorbtion display
+
+        airBar.tick(); //tick air bar
+        mountBar.tick(); //tick mount bar
+        jumpBar.tick(); //tick jump bar
     }
 }

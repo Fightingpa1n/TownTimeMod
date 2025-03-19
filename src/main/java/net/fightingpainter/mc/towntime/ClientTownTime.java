@@ -8,7 +8,7 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 @EventBusSubscriber(modid=TownTime.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
-public class TownTimeClient {
+public class ClientTownTime {
     
     @SubscribeEvent
     public static void registerOverlay(RegisterGuiLayersEvent event) { //register Hud Overlays

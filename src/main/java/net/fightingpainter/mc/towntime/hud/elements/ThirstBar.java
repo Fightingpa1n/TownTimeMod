@@ -13,6 +13,7 @@ public class ThirstBar extends BaseBarElement{
     private final static ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/thirst_background.png");
     
     private ThirstBarVariant variant = ThirstBarVariant.NORMAL;
+    private float hydration; //hydration level
 
     public ThirstBar() { //set size
         this.width = 87;
@@ -30,6 +31,8 @@ public class ThirstBar extends BaseBarElement{
         this.value = ThirstHelper.getThirst(player).getThirst();
         this.maxValue = 20;
 
+        this.hydration = ThirstHelper.getThirst(player).getHydration(); //get hydration level
+
         //sorted by priority
         if (player.hasEffect(TANEffects.THIRST)) {this.variant = ThirstBarVariant.THIRST;} //set variant to thirst
         else {this.variant = ThirstBarVariant.NORMAL;} //set variant to normal
@@ -39,11 +42,13 @@ public class ThirstBar extends BaseBarElement{
     public void render() {
         renderSimpleTexture(BACKGROUND, 87, 9, x, y); //render background
 
-        int textureWidth = 88; //set texture width
+        int textureWidth = 169; //set texture width
         int textureHeight = 15; //set texture height
         renderPartialTexture(TEXTURE, textureWidth, textureHeight, variant.dropletX, variant.dropletY, variant.dropletWidth, variant.dropletHeight, x+1, y+1); //render droplet
         renderBarLeft(TEXTURE, textureWidth, textureHeight, variant.barX, variant.barY, variant.barWidth, variant.barHeight, x+6, y+2); //render thirst bar
+        renderBarLeft(TEXTURE, textureWidth, textureHeight, variant.hydrationBarX, variant.hydrationBarY, variant.hydrationBarWidth, variant.hydrationBarHeight, hydration, this.maxValue, x+6, y+2); //render hydration bar
 
+        //render hunger bar value as text
         TextElement valueText = new TextElement(Math.round(this.value) + "/" + Math.round(this.maxValue));
         valueText.alignCenter(); //center align
         valueText.setScale(0.5f); //scale down
@@ -54,11 +59,13 @@ public class ThirstBar extends BaseBarElement{
     private enum ThirstBarVariant {
         NORMAL( //normal thirst bar
             0, 0, 7, 7, //droplet
-            8, 0, 80, 5 //bar
+            8, 0, 80, 5, //bar
+            89, 0, 80, 5 //hydration bar
         ),
         THIRST(
             0, 8, 7, 7, //droplet
-            8, 8, 80, 5 //bar
+            8, 8, 80, 5, //bar
+            89, 8, 80, 5 //hydration bar
         );
 
         public final int dropletX;
@@ -71,15 +78,30 @@ public class ThirstBar extends BaseBarElement{
         public final int barWidth;
         public final int barHeight;
 
-        ThirstBarVariant(int dropletX, int dropletY, int dropletWidth, int dropletHeight, int barX, int barY, int barWidth, int barHeight) {
+        public final int hydrationBarX;
+        public final int hydrationBarY;
+        public final int hydrationBarWidth;
+        public final int hydrationBarHeight;
+
+        ThirstBarVariant(
+            int dropletX, int dropletY, int dropletWidth, int dropletHeight,
+            int barX, int barY, int barWidth, int barHeight,
+            int hydrationBarX, int hydrationBarY, int hydrationBarWidth, int hydrationBarHeight
+        ) {
             this.dropletX = dropletX;
             this.dropletY = dropletY;
             this.dropletWidth = dropletWidth;
             this.dropletHeight = dropletHeight;
+
             this.barX = barX;
             this.barY = barY;
             this.barWidth = barWidth;
             this.barHeight = barHeight;
+
+            this.hydrationBarX = hydrationBarX;
+            this.hydrationBarY = hydrationBarY;
+            this.hydrationBarWidth = hydrationBarWidth;
+            this.hydrationBarHeight = hydrationBarHeight;
         }
     }
 }

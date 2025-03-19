@@ -8,6 +8,17 @@ public abstract class BaseBarElement extends BaseHudElement {
 
     //============================== Bar Helpers ==============================\\
     /**
+     * Rounds a float value to the nearest int while only returning 0 if the unrounded value is 0 or less
+     * so 0 can only be returned if the value truly is 0
+     * @param value the unrounded value
+     * @return the rounded value
+    */
+    protected int valueRound(float value) { //round value to the "nearest" int
+        if (value <= 0.0f) {return 0;} //only return 0 if unrounded value is 0 (or less)
+        return Math.max(1, Math.round(value)); //round value (minimum 1, so 0.1 rounds to 1)
+    }
+
+    /**
      * Calculates the fill amount of a bar based given params
      * @param value the current value of the bar
      * @param maxValue the maximum the value could be (if the bar would be full)
@@ -15,9 +26,9 @@ public abstract class BaseBarElement extends BaseHudElement {
      * @return the number of pixels that should be filled
     */
     protected int calculateFill(float value, float maxValue, int barLength) {
-        value = Math.max(0.0f, Math.min(maxValue, value)); //clamp value
+        value = Math.clamp(value, 0.0f, maxValue); //clamp value
         int result = Math.round(barLength * (value / maxValue)); //calculate fill amount
-        return Math.max(0, Math.min(barLength, result)); //clamp result to be within the bar length (shouldn't happen, but just in case)
+        return Math.clamp(result, 0, barLength); //return fill amount (clamped just to be sure)
     }
     
     //============================== Partial Texture Bar Render Helpers ==============================\\
@@ -36,7 +47,7 @@ public abstract class BaseBarElement extends BaseHudElement {
      * @param y The y-coordinate where the bar should be rendered (top-left corner)
     */
     protected void renderBarLeft(ResourceLocation texture, int textureWidth, int textureHeight, int u, int v, int barLength, int barHeight, int fill, int x, int y) {
-        fill = Math.max(0, Math.min(barLength, fill)); //clamp fill value
+        fill = Math.clamp(fill, 0, barLength); //clamp fill value
         renderPartialTexture(texture, textureWidth, textureHeight, u, v, fill, barHeight, x, y); //render the filled portion of the bar
     }
 
@@ -91,7 +102,7 @@ public abstract class BaseBarElement extends BaseHudElement {
      * @param y The y-coordinate where the bar should be rendered (top-left corner)
     */
     protected void renderBarRight(ResourceLocation texture, int textureWidth, int textureHeight, int u, int v, int barLength, int barHeight, int fill, int x, int y) {
-        fill = Math.max(0, Math.min(barLength, fill)); //clamp fill value
+        fill = Math.clamp(fill, 0, barLength); //clamp fill value
         u += barLength - fill; //shift u right by empty bar space (so to start from left side of the filled portion)
         x += barLength - fill; //shift x right by empty bar space (so to start from left side of the filled portion)
         renderPartialTexture(texture, textureWidth, textureHeight, u, v, fill, barHeight, x, y); //render the filled portion of the bar
@@ -148,7 +159,7 @@ public abstract class BaseBarElement extends BaseHudElement {
      * @param y The y-coordinate where the bar should be rendered (top-left corner)
      */
     protected void renderBarTop(ResourceLocation texture, int textureWidth, int textureHeight, int u, int v, int barWidth, int barLength, int fill, int x, int y) {
-        fill = Math.max(0, Math.min(barLength, fill)); //clamp fill value
+        fill = Math.clamp(fill, 0, barLength); //clamp fill value
         renderPartialTexture(texture, textureWidth, textureHeight, u, v, barWidth, fill, x, y); //render the filled portion of the bar
     }
 
@@ -203,7 +214,7 @@ public abstract class BaseBarElement extends BaseHudElement {
      * @param y The y-coordinate where the bar should be rendered (top-left corner)
      */
     protected void renderBarBottom(ResourceLocation texture, int textureWidth, int textureHeight, int u, int v, int barWidth, int barLength, int fill, int x, int y) {
-        fill = Math.max(0, Math.min(barLength, fill)); //clamp fill value
+        fill = Math.clamp(fill, 0, barLength); //clamp fill value
         v += barLength - fill; //shift v down by empty bar space (so to start from top side of the filled portion)
         y += barLength - fill; //shift y down by empty bar space (so to start from top side of the filled portion)
         renderPartialTexture(texture, textureWidth, textureHeight, u, v, barWidth, fill, x, y); //render the filled portion of the bar
@@ -405,5 +416,45 @@ public abstract class BaseBarElement extends BaseHudElement {
     */
     protected void renderBarBottom(ResourceLocation texture, int barWidth, int barLength, int x, int y) {
         renderBarBottom(texture, barWidth, barLength, 0, 0, barWidth, barLength, x, y); //render bar from full texture
+    }
+
+
+    //============================== Value Text Renderer ==============================\\
+    /**
+     * Renders the value of the bar as text
+     * @param value The current value of the bar
+     * @param maxValue The maximum value of the bar
+     * @param color The color of the text
+     * @param scale The scale of the text
+     * @param x The x-coordinate where the text should be rendered (top-left corner)
+     * @param y The y-coordinate where the text should be rendered (top-left corner)
+     * @param barWidth The width of the bar
+     * @param barHeight The height of the bar
+    */
+    protected void renderIntValueText(int value, int maxValue, int color, float scale, int x, int y, int barWidth, int barHeight) {
+        TextElement valueText = new TextElement(value+"/"+maxValue);
+        valueText.alignCenter(); //center align
+        valueText.setScale(scale); //scale down
+        valueText.setYShift(1); //shift down
+        renderText(valueText, x+(barWidth/2), y+(barHeight/2)); //render text
+    }
+
+    /**
+     * Renders the value of the bar as text
+     * @param value The current value of the bar (has to be rounded beforehand)
+     * @param maxValue The maximum value of the bar (has to be rounded beforehand)
+     * @param color The color of the text
+     * @param scale The scale of the text
+     * @param x The x-coordinate where the text should be rendered (top-left corner)
+     * @param y The y-coordinate where the text should be rendered (top-left corner)
+     * @param barWidth The width of the bar
+     * @param barHeight The height of the bar
+    */
+    protected void renderFloatValueText(float value, float maxValue, int color, float scale, int x, int y, int barWidth, int barHeight) {
+        TextElement valueText = new TextElement(value+"/"+maxValue);
+        valueText.alignCenter(); //center align
+        valueText.setScale(scale); //scale down
+        valueText.setYShift(1); //shift down
+        renderText(valueText, x+(barWidth/2), y+(barHeight/2)); //render text
     }
 }

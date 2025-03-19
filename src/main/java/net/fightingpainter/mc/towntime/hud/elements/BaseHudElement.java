@@ -3,7 +3,13 @@ package net.fightingpainter.mc.towntime.hud.elements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 
 import net.fightingpainter.mc.towntime.hud.elements.TextElement.*;
@@ -46,7 +52,12 @@ public abstract class BaseHudElement {
      * @see #getParameters(Player player)
     */
     public abstract void render(); //render method
-    
+
+    /**
+     * get's called every tick (can be used to update stuff) (optional)
+    */
+    public void tick() {}
+
     //=========== Rendering ===========\\
     /**
      * Render Logic for the element (get's parameters and renders only if shouldRender is true)
@@ -150,12 +161,6 @@ public abstract class BaseHudElement {
 
     //=========== Text ===========\\ (text helpers don't have zIndex variants as that would be way to many helper methods)
     /**
-     * get the Default Font
-     * @return default font
-    */
-    protected Font getFont() {return Minecraft.getInstance().font;}
-    
-    /**
      * Render a TextElement at the given position
      * @param textElement the text element to render
      * @see TextElement
@@ -223,4 +228,84 @@ public abstract class BaseHudElement {
     protected void renderCenteredText(String text, int x, int y) {
         renderText(new TextElement(text, Minecraft.getInstance().font, Txt.DEFAULT, AlignH.CENTER, AlignV.CENTER), x, y);
     }
+
+
+    //============================== Sounds ==============================\\
+    //=========== Start ===========\\
+    /**
+     * Play a sound with the given volume and pitch
+     * @param sound the sound to play
+     * @param volume the volume to play the sound with
+     * @param pitch  the pitch to play the sound with
+     * @return the sound instance
+    */
+    protected SoundInstance playSound(SoundEvent sound, float volume, float pitch) {
+        SoundInstance instance = SimpleSoundInstance.forUI(sound, volume, pitch); //create the sound instance
+        getSoundManager().play(instance); //play the sound
+        return instance; //return the sound instance
+    }
+
+    /**
+     * Play a sound with the given volume and default pitch (1.0f)
+     * @param sound the sound to play
+     * @param volume the volume to play the sound with
+     * @return the sound instance
+    */
+    protected SoundInstance playSound(SoundEvent sound, float volume) {
+        return playSound(sound, volume, 1.0f);
+    }
+
+    /**
+     * Play a sound with the default volume and pitch (both 1.0f)
+     * @param sound the sound to play
+     * @return the sound instance
+    */
+    protected SoundInstance playSound(SoundEvent sound) {return playSound(sound, 1.0f, 1.0f);}
+
+    //=========== Stop ===========\\
+    /**
+     * Stop a sound instance
+     * @param soundInstance the sound instance to stop
+    */
+    protected void stopSound(SoundInstance soundInstance) {getSoundManager().stop(soundInstance);}
+
+
+
+
+    //============================== Other ==============================\\
+    /**
+     * Get the current Minecraft Instance (I would say the client instance but I'm not sure so minecraft instance it is)
+     * @return the Minecraft Instance
+    */
+    protected Minecraft getMinecraft() {return Minecraft.getInstance();}
+
+    /**
+     * Get the SoundManager (assuming client side only)
+     * @return the SoundManager
+    */
+    protected SoundManager getSoundManager() {return getMinecraft().getSoundManager();}
+    
+    /**
+     * Get the current World (assuming client side only)
+     * @return the World
+    */
+    protected ClientLevel getWorld() {return getMinecraft().level;}
+    
+    /**
+     * Get the current Player (assuming client side only)
+     * @return the Player
+    */
+    protected Player getPlayer() {return getMinecraft().player;}
+    
+    /**
+     * Get the current GameMode (assuming client side only)
+     * @return the GameMode
+    */
+    protected MultiPlayerGameMode getGameMode() {return getMinecraft().gameMode;}
+        
+    /**
+     * get the Default Font
+     * @return default font
+    */
+    protected Font getFont() {return getMinecraft().font;}
 }
