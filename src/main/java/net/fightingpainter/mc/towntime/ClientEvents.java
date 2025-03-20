@@ -28,7 +28,7 @@ public class ClientEvents {
         ResourceLocation overlay = event.getName();
         if ( //if any of the following overlays are present, cancel the event
             overlay == VanillaGuiLayers.PLAYER_HEALTH
-            || overlay == VanillaGuiLayers.FOOD_LEVEL
+            // || overlay == VanillaGuiLayers.FOOD_LEVEL
             || overlay == VanillaGuiLayers.AIR_LEVEL
             || overlay == VanillaGuiLayers.EXPERIENCE_BAR
             || overlay == VanillaGuiLayers.EXPERIENCE_LEVEL
