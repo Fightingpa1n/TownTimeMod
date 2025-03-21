@@ -1,18 +1,39 @@
 package net.fightingpainter.mc.towntime;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import net.fightingpainter.mc.towntime.client.ModSounds;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.fml.loading.FMLPaths;
+import net.fightingpainter.mc.towntime.client.ModSounds;
+import net.fightingpainter.mc.towntime.data.ModDataComponentTypes;
+import net.fightingpainter.mc.towntime.food.SustenanceProperties;
+import net.fightingpainter.mc.towntime.food.SustinanceLoader;
+import net.fightingpainter.mc.towntime.mixin.ItemAccessor;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
-// The value here should match an entry in the META-INF/neoforge.mods.toml file
+
 @Mod(TownTime.MOD_ID)
 public class TownTime {
     public static final String MOD_ID = "towntime";
@@ -24,7 +45,8 @@ public class TownTime {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
-        ModSounds.register(modEventBus);
+        ModSounds.register(modEventBus); //register sounds
+        ModDataComponentTypes.register(modEventBus); //register data component types
         
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (TownTimeMod) to respond directly to events.
@@ -36,14 +58,10 @@ public class TownTime {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
-
-        // if (Config.logDirtBlock)
-        //     LOGGER.info("DIRT BLOCK >> {}", BuiltInRegistries.BLOCK.getKey(Blocks.DIRT));
-
-        // LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
-
-        // Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
+        
+        event.enqueueWork(() -> {
+            SustinanceLoader.load(); //load sustinance data
+        });
     }
 }

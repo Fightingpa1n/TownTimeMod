@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "package": "net.fightingpainter.mc.towntime.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "ItemMixin",
+        "ItemAccessor"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

@@ -1,13 +1,18 @@
 package net.fightingpainter.mc.towntime.commands;
 
+import java.util.stream.Collectors;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
+import net.minecraft.world.item.ItemStack;
 import net.fightingpainter.mc.towntime.util.Txt;
 
 
@@ -19,6 +24,7 @@ public class DebugCommands {
             .then(Commands.literal("health").executes(context -> getHealth(context)))
             .then(Commands.literal("hunger").executes(context -> getHunger(context)))
             .then(Commands.literal("saturation").executes(context -> getSaturation(context)))
+            .then(Commands.literal("item").executes(context -> getItem(context)))
         );
 
         dispatcher.register(Commands.literal("dset")
@@ -70,6 +76,28 @@ public class DebugCommands {
             float saturation = player.getFoodData().getSaturationLevel(); //get saturation
             float maxSaturation = 20; //get max saturation
             message(context, "Saturation: " + saturation+"/"+maxSaturation); //send saturation
+            return 1; //return success
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0; //return failure
+        }
+    }
+
+    private static int getItem(CommandContext<CommandSourceStack> context) {
+        try {
+            Player player = context.getSource().getPlayerOrException(); //get player
+            ItemStack item = player.getMainHandItem(); //get item
+
+            //get ItemStack components
+            String name = item.getHoverName().getString(); //get name
+            DataComponentMap components = item.getComponents();
+            String tags = item.getTags()
+                .map(TagKey::location)
+                .map(Object::toString)
+                .collect(Collectors.joining(", "));
+
+            message(context, name+" :\n components: "+components.toString()+"\n\n tags: "+tags); //send item
+            
             return 1; //return success
         } catch (Exception e) {
             e.printStackTrace();

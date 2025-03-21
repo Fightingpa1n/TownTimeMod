@@ -1,0 +1,49 @@
+{
+    "modid:itemid_0": {
+        "nutrition": 1,
+        "saturation_modifier": 1.0,
+        "water": 1,
+        "hydration_modifier": 1.0
+    },
+
+    "modid:itemid_1": {
+        "nutrition": 1,
+        "saturation_modifier": 1.0,
+        "water": 1,
+        "hydration_modifier": 1.0,
+        "can_always_consume": true
+    },
+
+    "modid:itemid_2": {
+        "nutrition": 1,
+        "saturation_modifier": 1.0,
+        "water": 1,
+        "hydration_modifier": 1.0,
+        "can_always_consume": true,
+        "using_converts_to": {"id": "minecraft:apple"}
+    },
+
+    "modid:itemid_3": {
+        "nutrition": 1,
+        "saturation_modifier": 1.0,
+        "water": 1,
+        "hydration_modifier": 1.0,
+        "can_always_consume": true,
+        "using_converts_to": {"id": "minecraft:apple"},
+        "effects": [
+            {"effect": {"id": "minecraft:speed", "amplifier": 1, "duration": 200}}
+        ]
+    },
+
+    "modid:itemid_4": {
+        "nutrition": 1,
+        "saturation_modifier": 1.0,
+        "water": 1,
+        "hydration_modifier": 1.0,
+        "can_always_consume": true,
+        "using_converts_to": {"id": "minecraft:apple"},
+        "effects": [
+            {"effect": {"id": "minecraft:speed", "amplifier": 1, "duration": 200}, "probability": 0.5}
+        ]
+    }
+}
