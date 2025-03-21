@@ -5,7 +5,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fightingpainter.mc.towntime.data.ModDataComponentTypes;
 import net.fightingpainter.mc.towntime.food.ConsumableHelper;
 import net.fightingpainter.mc.towntime.food.SustenanceProperties;
 import net.minecraft.world.InteractionHand;
@@ -16,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
-import toughasnails.api.thirst.ThirstHelper;
 
 @Mixin(Item.class)
 public class ItemMixin {

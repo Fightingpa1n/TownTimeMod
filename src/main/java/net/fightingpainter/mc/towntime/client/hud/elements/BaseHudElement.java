@@ -1,4 +1,4 @@
-package net.fightingpainter.mc.towntime.hud.elements;
+package net.fightingpainter.mc.towntime.client.hud.elements;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -11,8 +11,7 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
-
-import net.fightingpainter.mc.towntime.hud.elements.TextElement.*;
+import net.fightingpainter.mc.towntime.client.hud.elements.TextElement.*;
 import net.fightingpainter.mc.towntime.util.Txt;
 
 

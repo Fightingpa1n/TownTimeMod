@@ -1,4 +1,4 @@
-package net.fightingpainter.mc.towntime.hud;
+package net.fightingpainter.mc.towntime.client.hud;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import net.fightingpainter.mc.towntime.TownTime;
-import net.fightingpainter.mc.towntime.hud.elements.*;
+import net.fightingpainter.mc.towntime.client.hud.elements.*;
 
 
 public class HudRenderer {

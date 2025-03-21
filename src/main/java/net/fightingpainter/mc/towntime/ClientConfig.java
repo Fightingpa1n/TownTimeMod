@@ -40,6 +40,8 @@ public class ClientConfig {
         .comment("Round the saturation bar Texture") //TODO: I need to better explain what this does
         .define("roundSaturationTexture", false);
 
+    //============================== Tooltip ==============================\\
+
 
     public static final ModConfigSpec SPEC = BUILDER.build();
     

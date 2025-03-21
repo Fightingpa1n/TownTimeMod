@@ -1,17 +1,19 @@
 package net.fightingpainter.mc.towntime;
 
+import net.fightingpainter.mc.towntime.client.hud.HudRenderer;
+import net.fightingpainter.mc.towntime.food.ConsumableHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-
-import net.fightingpainter.mc.towntime.hud.HudRenderer;
 
 @EventBusSubscriber(modid=TownTime.MOD_ID, bus = EventBusSubscriber.Bus.GAME, value=Dist.CLIENT)
 public class ClientEvents {
@@ -64,5 +66,13 @@ public class ClientEvents {
     @SubscribeEvent
     public static void renderGui(ScreenEvent.Render.Post event) { //gui rendering
         HudRenderer.xpBarRenderer(event.getScreen(), event.getGuiGraphics());
+    }
+
+    @SubscribeEvent
+    public static void gatherTooltips(RenderTooltipEvent.GatherComponents event) { //tooltip gathering
+        ItemStack stack = event.getItemStack(); //get the itemstack
+        if (ConsumableHelper.isConsumable(stack)) { //if the item is consumable
+            ConsumableHelper.modifyTooltip(event.getTooltipElements(), stack); //modify the tooltip
+        }
     }
 }
