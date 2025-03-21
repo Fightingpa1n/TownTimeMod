@@ -10,22 +10,46 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 @EventBusSubscriber(modid = TownTime.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class ClientConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    
-    public static boolean ROUND_HEALTH_BAR_VALUE;
-    private static final ModConfigSpec.BooleanValue roundHealthBarValue = BUILDER
-        .comment("Whether to round the Healthbar to use whole numbers instead of decimals")
-        .define("roundHealthBar", true);
 
-    public static boolean ROUND_HEALTH_BAR_TEXTURE;
-    private static final ModConfigSpec.BooleanValue roundHealthBarTexture = BUILDER
+    //============================== Hud ==============================\\
+    //=========== Health ===========\\
+    public static boolean ROUND_HEALTH_VALUE;
+    private static final ModConfigSpec.BooleanValue roundHealthValue = BUILDER
+        .comment("Whether to round the Healthbar to use whole numbers instead of decimals")
+        .define("roundHealthValue", true);
+
+    public static boolean ROUND_HEALTH_TEXTURE;
+    private static final ModConfigSpec.BooleanValue roundHealthTexture = BUILDER
         .comment("Round the health bar Texture") //TODO: I need to better explain what this does
-        .define("roundHealthBarTexture", false);
+        .define("roundHealthTexture", false);
+
+    //=========== Hunger ===========\\
+    public static boolean HUNGER_VALUE;
+    private static final ModConfigSpec.BooleanValue hungerValue = BUILDER
+        .comment("whether to show the hunger bar value as text on the hunger bar")
+        .define("hungerValue", true);
+
+    public static float HUNGER_VALUE_SIZE;
+    private static final ModConfigSpec.DoubleValue hungerValueSize = BUILDER
+        .comment("The size of the hunger value text")
+        .defineInRange("hungerValueSize", 0.5, 0.3, 1.0);
+    
+
+    public static boolean ROUND_SATURATION_TEXTURE;
+    private static final ModConfigSpec.BooleanValue roundSaturationTexture = BUILDER
+        .comment("Round the saturation bar Texture") //TODO: I need to better explain what this does
+        .define("roundSaturationTexture", false);
+
 
     public static final ModConfigSpec SPEC = BUILDER.build();
     
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) { //load config
-        ROUND_HEALTH_BAR_TEXTURE = roundHealthBarTexture.get();
-        ROUND_HEALTH_BAR_VALUE = roundHealthBarValue.get();
+        ROUND_HEALTH_VALUE = roundHealthValue.get();
+        ROUND_HEALTH_TEXTURE = roundHealthTexture.get();
+
+        HUNGER_VALUE = hungerValue.get();
+        HUNGER_VALUE_SIZE = hungerValueSize.get().floatValue();
+        ROUND_SATURATION_TEXTURE = roundSaturationTexture.get();
     }
 }

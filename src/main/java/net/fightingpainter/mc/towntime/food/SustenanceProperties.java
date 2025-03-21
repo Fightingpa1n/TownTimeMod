@@ -20,19 +20,19 @@ public class SustenanceProperties {
     private final static float DEFAULT_CONSUME_TIME = 1.6F;
 
     private final int nutrition; //how much hunger is restored upon consumtion
-    private final float saturationModifier; //how much saturation is "restored" upon consumtion
+    private final float saturation; //how much saturation is "restored" upon consumtion
     private final int water; //how much water is restored upon consumtion
-    private final float hydrationModifier; //how much hydration is "restored" upon consumtion
+    private final float hydration; //how much hydration is "restored" upon consumtion
     private final boolean canAlwaysConsume; //if the food can always be consumed
     private final float consumeTime; //how long it takes to consume the food
     private final Optional<ItemStack> usingConvertsTo; //what the food converts to when used
     private final List<SustenanceProperties.PossibleEffect> effects; //possible effects that the food can give
 
-    public SustenanceProperties(int nutrition, float saturationModifier, int water, float hydrationModifier, boolean canAlwaysConsume, float consumeTime, Optional<ItemStack> usingConvertsTo, List<SustenanceProperties.PossibleEffect> effects) {
+    public SustenanceProperties(int nutrition, float saturation, int water, float hydration, boolean canAlwaysConsume, float consumeTime, Optional<ItemStack> usingConvertsTo, List<SustenanceProperties.PossibleEffect> effects) {
         this.nutrition = nutrition;
-        this.saturationModifier = saturationModifier;
+        this.saturation = saturation;
         this.water = water;
-        this.hydrationModifier = hydrationModifier;
+        this.hydration = hydration;
         this.canAlwaysConsume = canAlwaysConsume;
         this.consumeTime = consumeTime;
         this.usingConvertsTo = usingConvertsTo;
@@ -43,12 +43,12 @@ public class SustenanceProperties {
     //============================== Data ==============================\\
     /** Get the nutrition level of the food (how much hunger is restored upon consuming)*/
     public int getNutrition() {return this.nutrition;}
-    /** Get the saturation modifier of the food (how much saturation is "restored" upon consuming)*/
-    public float getSaturationModifier() {return this.saturationModifier;}
+    /** Get the saturation level of the food (how much saturation is restored upon consuming)*/
+    public float getSaturation() {return this.saturation;}
     /** Get the water level of the food (how much water is restored upon consuming)*/
     public int getWater() {return this.water;}
-    /** Get the hydration modifier of the food (how much hydration is "restored" upon consumtion)*/
-    public float getHydrationModifier() {return this.hydrationModifier;}
+    /** Get the hydration level of the food (how much hydration is restored upon consuming)*/
+    public float getHydration() {return this.hydration;}
     /** Get if the food can always be consumed*/
     public boolean canAlwaysConsume() {return this.canAlwaysConsume;}
     /** Get the time it takes to consume the food*/
@@ -58,14 +58,51 @@ public class SustenanceProperties {
     /** Get the list of possible effects that the food can give*/
     public List<SustenanceProperties.PossibleEffect> getEffects() {return this.effects;}
 
+    //=========== Methotds ===========\\
+    /**
+     * Minecraft actually takes a Modifier for saturation instead of directly adding a value
+     * but I like the idea of setting the value that get's added directly
+     * so this method will calculate the modifier based on the nutrition and saturation values
+     * so it then can be used in the eat method of the player
+    */
+    public float getSaturationModifier() {
+        return saturation / (nutrition * 2.0F);
+    }
 
+    /**
+     * Same as the SaturationModifier but for hydration
+     * I can't say though that minecraft handles this since it's actually tough as nails using the exact same formula for calculating
+     * the level of hydration based on a modifier
+     * @see #getSaturationModifier()
+    */
+    public float getHydrationModifier() {
+        return hydration / (water * 2.0F);
+    }
+
+    /**
+     * Check if the food has a conversion item it will turn into after being used
+     * @return true if the food has a conversion item
+    */
+    public boolean hasConversionItem() {
+        return usingConvertsTo.isPresent();
+    }
+
+    /**
+     * Get the item that the food converts to when used
+     * @return the item that the food converts to when used
+    */
+    public ItemStack getConversionItem() {
+        return usingConvertsTo.orElse(ItemStack.EMPTY);
+    }
+
+    
     //============================== Codec ==============================\\
     /** Codec for SustenanceProperties*/
     public static final Codec<SustenanceProperties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ExtraCodecs.NON_NEGATIVE_INT.fieldOf("nutrition").forGetter(SustenanceProperties::getNutrition),
-        Codec.FLOAT.fieldOf("saturation_modifier").forGetter(SustenanceProperties::getSaturationModifier),
+        Codec.FLOAT.fieldOf("saturation_modifier").forGetter(SustenanceProperties::getSaturation),
         ExtraCodecs.NON_NEGATIVE_INT.fieldOf("water").forGetter(SustenanceProperties::getWater),
-        Codec.FLOAT.fieldOf("hydration_modifier").forGetter(SustenanceProperties::getHydrationModifier),
+        Codec.FLOAT.fieldOf("hydration_modifier").forGetter(SustenanceProperties::getHydration),
         Codec.BOOL.optionalFieldOf("can_always_consume", Boolean.valueOf(false)).forGetter(SustenanceProperties::canAlwaysConsume),
         Codec.FLOAT.optionalFieldOf("consume_time", DEFAULT_CONSUME_TIME).forGetter(SustenanceProperties::getConsumeTime),
         ItemStack.SINGLE_ITEM_CODEC.optionalFieldOf("using_converts_to").forGetter(SustenanceProperties::getUsingConvertsTo),
@@ -91,9 +128,9 @@ public class SustenanceProperties {
         @Override
         public void encode(@Nonnull RegistryFriendlyByteBuf buf, @Nonnull SustenanceProperties s) {
             ByteBufCodecs.VAR_INT.encode(buf, s.getNutrition());
-            ByteBufCodecs.FLOAT.encode(buf, s.getSaturationModifier());
+            ByteBufCodecs.FLOAT.encode(buf, s.getSaturation());
             ByteBufCodecs.VAR_INT.encode(buf, s.getWater());
-            ByteBufCodecs.FLOAT.encode(buf, s.getHydrationModifier());
+            ByteBufCodecs.FLOAT.encode(buf, s.getHydration());
             ByteBufCodecs.BOOL.encode(buf, s.canAlwaysConsume());
             ByteBufCodecs.FLOAT.encode(buf, s.getConsumeTime());
             ByteBufCodecs.optional(ItemStack.STREAM_CODEC).encode(buf, s.getUsingConvertsTo());
@@ -108,9 +145,9 @@ public class SustenanceProperties {
         SustenanceProperties that = (SustenanceProperties) o; // Cast to this class
         boolean result;
         result = this.nutrition == that.nutrition;
-        result = result && Float.compare(that.saturationModifier, this.saturationModifier) == 0;
+        result = result && Float.compare(that.saturation, this.saturation) == 0;
         result = result && this.water == that.water;
-        result = result && Float.compare(that.hydrationModifier, this.hydrationModifier) == 0;
+        result = result && Float.compare(that.hydration, this.hydration) == 0;
         result = result && this.canAlwaysConsume == that.canAlwaysConsume;
         result = result && Float.compare(that.consumeTime, this.consumeTime) == 0;
         result = result && this.usingConvertsTo.equals(that.usingConvertsTo);
@@ -119,7 +156,7 @@ public class SustenanceProperties {
     }
 
     @Override
-    public int hashCode() {return Objects.hash(nutrition, saturationModifier, water, hydrationModifier, canAlwaysConsume, consumeTime, usingConvertsTo, effects);}
+    public int hashCode() {return Objects.hash(nutrition, saturation, water, hydration, canAlwaysConsume, consumeTime, usingConvertsTo, effects);}
 
 
     //============================== Debug ==============================\\
@@ -127,9 +164,9 @@ public class SustenanceProperties {
     public String toString() {
         return "SustenanceProperties{"
             + "nutrition=" + nutrition
-            + ", saturationModifier=" + saturationModifier
+            + ", saturation=" + saturation
             + ", water=" + water
-            + ", hydrationModifier=" + hydrationModifier
+            + ", hydration=" + hydration
             + ", canAlwaysConsume=" + canAlwaysConsume
             + ", consumeTime=" + consumeTime
             + ", usingConvertsTo=" + usingConvertsTo
