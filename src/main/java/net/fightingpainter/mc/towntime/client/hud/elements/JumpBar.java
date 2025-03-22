@@ -1,4 +1,4 @@
-package net.fightingpainter.mc.towntime.hud.elements;
+package net.fightingpainter.mc.towntime.client.hud.elements;
 
 import net.fightingpainter.mc.towntime.TownTime;
 import net.minecraft.client.Minecraft;

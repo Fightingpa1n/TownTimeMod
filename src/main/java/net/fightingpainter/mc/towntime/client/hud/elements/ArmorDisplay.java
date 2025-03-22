@@ -1,4 +1,4 @@
-package net.fightingpainter.mc.towntime.hud.elements;
+package net.fightingpainter.mc.towntime.client.hud.elements;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -7,23 +7,23 @@ import net.minecraft.world.entity.player.Player;
 
 import net.fightingpainter.mc.towntime.TownTime;
 
-public class AbsorbtionDisplay extends BaseHudElement {
-    private final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/absorbtion.png");
+public class ArmorDisplay extends BaseHudElement {
+    private final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/armor.png");
     private int value;
 
-    public AbsorbtionDisplay() { //set size
+    public ArmorDisplay() { //set size
         this.width = 16;
         this.height = 16;
     }
 
     @Override
     public boolean shouldRender(Player player) {
-        return player.getAbsorptionAmount() > 0;
+        return player.getArmorValue() > 0;
     }
 
     @Override
     public void getParameters(Player player) {
-        this.value = (int) player.getAbsorptionAmount();
+        this.value = (int) player.getArmorValue();
     }
     
     @Override

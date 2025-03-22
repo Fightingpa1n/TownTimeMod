@@ -1,7 +1,14 @@
 package net.fightingpainter.mc.towntime.food;
 
+import java.util.List;
+
+import com.mojang.datafixers.util.Either;
+
+import net.fightingpainter.mc.towntime.ClientConfig;
 import net.fightingpainter.mc.towntime.data.ModDataComponentTypes;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 
 public class ConsumableHelper {
@@ -81,4 +88,23 @@ public class ConsumableHelper {
             }
         }
     }
+
+
+    /**
+     * Modify the tooltip of a consumable item
+     * @param tooltipElements the tooltip to modify
+     * @param stack the itemstack to modify
+    */
+    public static void modifyTooltip(List<Either<FormattedText, TooltipComponent>> tooltipElements, ItemStack stack) {
+        SustenanceProperties props = getSustenanceProperties(stack);
+        if (props == null) {return;}
+
+        int nutrition = props.getNutrition();
+        float saturation = props.getSaturation();
+        int water = props.getWater();
+        float hydration = props.getHydration();
+        
+        tooltipElements.add(Either.left(FormattedText.of("Nutrition: "+nutrition + " | Saturation: "+saturation)));
+        tooltipElements.add(Either.left(FormattedText.of("Water: "+water + " | Hydration: "+hydration)));
+    }    
 }

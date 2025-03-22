@@ -1,10 +1,13 @@
-package net.fightingpainter.mc.towntime.hud.elements;
+package net.fightingpainter.mc.towntime.client.hud.elements;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.fightingpainter.mc.towntime.ClientConfig;
 import net.fightingpainter.mc.towntime.TownTime;
+import net.fightingpainter.mc.towntime.food.ConsumableHelper;
+import net.fightingpainter.mc.towntime.food.SustenanceProperties;
 import net.fightingpainter.mc.towntime.util.Txt;
 
 
@@ -51,10 +54,12 @@ public class HungerBar extends BaseBarElement{
     private static final int STARVING_THRESHOLD = 0; //hunger level threshold for starving texture
     private static final float INCREASE_SUB_INCREASE = 0.1f; //how much to increase the hunger increase subbar each tick
 
-
     //============================== Variables ==============================\\
     private BarVariant variant = BarVariant.NORMAL; //hunger bar variant (different textures for different status effects and such)
     private DrumstickVariation drumstick = DrumstickVariation.NORMAL; //drumstick variant (looks different depending on hunger level, normal, hungry if can't do stuff like sprint, and starving for once you take damage)
+
+    private boolean doPreview = false; //previews are possible
+    private int previewCounter = 0; //tick counter for preview
 
     //=========== Hunger ===========\\
     private float previousValue; //previous hunger value
@@ -68,6 +73,9 @@ public class HungerBar extends BaseBarElement{
     private float increaseSubValue; //value of the hunger increase subbar
     private int increaseSubCounter = 0; //tick counter for the hunger increase subbar
     private boolean increaseSub = false; //if the hunger increase subbar is currently shown
+
+    private float previewValue; //value of the hunger preview subbar
+    private boolean previewSub = false; //if the hunger preview subbar is currently shown
     
     //=========== Saturation ===========\\
     private float saturationValue; //saturation level (this is maybe a bit confusing due to the same name but the float saturation is the saturation level of the player, and the SaturationVariant is for the saturation effect)
@@ -82,6 +90,9 @@ public class HungerBar extends BaseBarElement{
     private float saturationIncreaseSubValue; //value of the saturation increase subbar
     private int saturationIncreaseSubCounter = 0; //tick counter for the saturation increase subbar
     private boolean saturationIncreaseSub = false; //if the saturation increase subbar is currently shown
+
+    private float saturationPreviewValue; //value of the saturation preview subbar
+    private boolean saturationPreviewSub = false; //if the saturation preview subbar is currently shown
 
     
     //============================== Overrides ==============================\\
@@ -127,6 +138,28 @@ public class HungerBar extends BaseBarElement{
             saturationIncrease = true; saturationIncreaseCounter = 0; //set increase alt texture
             saturationIncreaseSub = true; saturationIncreaseSubCounter = 0; //activate increase subbar
             saturationDecrease = false; //unset decrease alt texture
+        }
+
+        //preview
+        ItemStack stack = player.getMainHandItem(); //get the itemstack in the player's main hand
+        if (ConsumableHelper.canConsume(player, stack)) { //if the item is consumable
+            doPreview = true; //previews are possible
+            SustenanceProperties props = ConsumableHelper.getSustenanceProperties(stack); //get the sustenance properties of the item
+
+            if (props.getNutrition() > 0) { //if the item has nutrition
+                previewValue = Math.min(value + props.getNutrition(), maxValue); //set preview value to the current value plus the nutrition value of the item
+                previewSub = true;
+            } else {previewSub = false;} //previews are not possible
+            
+            if (props.getSaturation() > 0) { //if the item has saturation
+                saturationPreviewValue = Math.min(saturationValue + props.getSaturation(), maxValue); //set preview value to the current value plus the saturation value of the item
+                saturationPreviewSub = true;
+            } else {saturationPreviewSub = false;} //previews are not possible
+
+        } else {
+            doPreview = false; previewCounter = 0; //previews are not possible (reset preview counter)
+            previewSub = false; //deactivate preview subbar
+            saturationPreviewSub = false; //deactivate saturation preview subbar
         }
 
         //drumstick
@@ -198,13 +231,15 @@ public class HungerBar extends BaseBarElement{
                 }
             }
         } else {saturationIncreaseSubValue = saturationFillValue;} //set subbar value to current value if not displaying subbar (so once we should display it, it will have the correct value)
-        
+
+        //TODO: add preview tick stuff so it looks nice.
     }
 
     @Override
     public void render() {
         renderSimpleTexture(BACKGROUND, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, x, y); //render background
-
+        
+        if (previewSub) {renderHungerPreviewSub(previewValue, maxValue, x, y);} //render preview subbar
         if (increaseSub) { //if increase subbar is active
             renderHungerIncreaseSub(value, maxValue, x, y); //render increase subbar (we actually render the normal bar as the subbar)
             if (decreaseAlt) {renderHungerDecrease(increaseSubValue, maxValue, x, y);} //render decrease texture (we render the subbar as a fake main bar making it seem like it slowly is increasing)
@@ -215,10 +250,10 @@ public class HungerBar extends BaseBarElement{
             else if (increaseAlt) {renderHungerIncrease(value, maxValue, x, y);} //render increase texture
             else {renderHunger(value, maxValue, x, y);} //render normal texture
         }
-
-
+        
+        
         float saturationFillValue = (ClientConfig.ROUND_SATURATION_TEXTURE) ? Math.round(saturationValue) : saturationValue; //round saturation value if config is set to round saturation texture
-
+        
         if (saturationIncreaseSub) { //if increase subbar is active
             renderSaturationIncreaseSub(saturationFillValue, maxValue, x, y); //render increase subbar (we actually render the normal bar as the subbar)
             if (saturationDecrease) {renderSaturationDecrease(saturationIncreaseSubValue, maxValue, x, y);} //render decrease texture (we render the subbar as a fake main bar making it seem like it slowly is increasing)
@@ -229,7 +264,8 @@ public class HungerBar extends BaseBarElement{
             else if (saturationIncrease) {renderSaturationIncrease(saturationFillValue, maxValue, x, y);} //render increase texture
             else {renderSaturation(saturationFillValue, maxValue, x, y);} //render normal texture
         }
-
+        if (saturationPreviewSub) {renderSaturationPreviewSub(saturationPreviewValue, maxValue, x, y);} //render saturation preview subbar
+        
         //render hunger bar value as text
         if (ClientConfig.HUNGER_VALUE) {renderIntValueText((int)value, (int)maxValue, Txt.DEFAULT, ClientConfig.HUNGER_VALUE_SIZE, x+BAR_OFFSET_X, y+BAR_OFFSET_Y, BAR_WIDTH, BAR_HEIGHT);}
     }
