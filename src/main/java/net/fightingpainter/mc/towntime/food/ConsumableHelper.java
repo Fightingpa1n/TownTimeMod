@@ -3,12 +3,14 @@ package net.fightingpainter.mc.towntime.food;
 import net.fightingpainter.mc.towntime.data.ModDataComponentTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import toughasnails.api.thirst.ThirstHelper;
 
 public class ConsumableHelper {
 
-    
+    /**
+     * Get the SustenanceProperties of an ItemStack if it has one
+     * @param stack the ItemStack to get the SustenanceProperties of
+     * @return the SustenanceProperties of the ItemStack, or null if it doesn't have one
+    */
     public static SustenanceProperties getSustenanceProperties(ItemStack stack) {
         if (!stack.has(ModDataComponentTypes.SUSTINENCE.get())) {return null;}
         try {
@@ -37,15 +39,9 @@ public class ConsumableHelper {
      * @return true if the player can consume the item
     */
     public static boolean canConsume(Player player, SustenanceProperties props) {
-        //check nutrition
-        int playerHunger = player.getFoodData().getFoodLevel();
-        boolean couldEat = (playerHunger <= 20 && props.getNutrition() > 0); //if the player is not full and the food has nutrition
-
-        //check water
-        int playerThirst = ThirstHelper.getThirst(player).getThirst();
-        boolean couldDrink = (playerThirst <= 20 && props.getWater() > 0); //if the player is not full and the food has water
-
-        //check if consumable
+        SustinanceData data = SustinanceData.of(player); //get the player's sustinance data
+        boolean couldEat = (data.getHunger() <= 20 && props.getNutrition() > 0); //if the player is not full and the food has nutrition
+        boolean couldDrink = (data.getThirst() <= 20 && props.getWater() > 0); //if the player is not full and the food has water
         return (couldEat || couldDrink) || props.canAlwaysConsume();
     }
 
@@ -67,9 +63,9 @@ public class ConsumableHelper {
      * @param props the SustenanceProperties of the item
     */
     public static void consume(Player player, SustenanceProperties props) {
-        // Apply hunger and thirst
-        player.getFoodData().eat(props.getNutrition(), props.getSaturationModifier());
-        ThirstHelper.getThirst(player).drink(props.getWater(), props.getHydrationModifier());
+        SustinanceData data = SustinanceData.of(player);
+        data.addHunger(props.getNutrition()); data.addSaturation(props.getSaturation());
+        data.addThirst(props.getWater()); data.addHydration(props.getHydration());
     }
 
     /**
@@ -79,14 +75,10 @@ public class ConsumableHelper {
      * @param props the SustenanceProperties of the item
     */
     public static void applyEffects(Player player, SustenanceProperties props) { //Apply effects
-        
         for (SustenanceProperties.PossibleEffect effectData : props.getEffects()) {
             if (player.getRandom().nextFloat() < effectData.getProbability()) {
                 player.addEffect(effectData.getEffect());
             }
         }
     }
-
-
-    
 }

@@ -7,9 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(Item.class)
 public interface ItemAccessor {
-    @Accessor("components")
-    DataComponentMap getProperties();
-
-    @Accessor("components")
-    void setProperties(DataComponentMap components);
+    @Accessor("components") DataComponentMap getProperties();
+    @Accessor("components") void setProperties(DataComponentMap components);
 }

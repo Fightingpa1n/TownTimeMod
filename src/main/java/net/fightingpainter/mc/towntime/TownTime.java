@@ -22,7 +22,7 @@ import net.neoforged.fml.loading.FMLPaths;
 import net.fightingpainter.mc.towntime.client.ModSounds;
 import net.fightingpainter.mc.towntime.data.ModDataComponentTypes;
 import net.fightingpainter.mc.towntime.food.SustenanceProperties;
-import net.fightingpainter.mc.towntime.food.SustinanceLoader;
+import net.fightingpainter.mc.towntime.food.SustinancePropertyLoader;
 import net.fightingpainter.mc.towntime.mixin.ItemAccessor;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -61,7 +61,7 @@ public class TownTime {
         LOGGER.info("HELLO FROM COMMON SETUP");
         
         event.enqueueWork(() -> {
-            SustinanceLoader.load(); //load sustinance data
+            // SustinanceLoader.load(); //load sustinance data
         });
     }
 }

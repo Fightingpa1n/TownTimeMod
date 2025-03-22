@@ -38,7 +38,7 @@ public class SustenanceProperties {
         this.usingConvertsTo = usingConvertsTo;
         this.effects = effects;
     }
-
+    
 
     //============================== Data ==============================\\
     /** Get the nutrition level of the food (how much hunger is restored upon consuming)*/
@@ -60,26 +60,6 @@ public class SustenanceProperties {
 
     //=========== Methotds ===========\\
     /**
-     * Minecraft actually takes a Modifier for saturation instead of directly adding a value
-     * but I like the idea of setting the value that get's added directly
-     * so this method will calculate the modifier based on the nutrition and saturation values
-     * so it then can be used in the eat method of the player
-    */
-    public float getSaturationModifier() {
-        return saturation / (nutrition * 2.0F);
-    }
-
-    /**
-     * Same as the SaturationModifier but for hydration
-     * I can't say though that minecraft handles this since it's actually tough as nails using the exact same formula for calculating
-     * the level of hydration based on a modifier
-     * @see #getSaturationModifier()
-    */
-    public float getHydrationModifier() {
-        return hydration / (water * 2.0F);
-    }
-
-    /**
      * Check if the food has a conversion item it will turn into after being used
      * @return true if the food has a conversion item
     */
@@ -95,7 +75,7 @@ public class SustenanceProperties {
         return usingConvertsTo.orElse(ItemStack.EMPTY);
     }
 
-    
+
     //============================== Codec ==============================\\
     /** Codec for SustenanceProperties*/
     public static final Codec<SustenanceProperties> CODEC = RecordCodecBuilder.create(instance -> instance.group(

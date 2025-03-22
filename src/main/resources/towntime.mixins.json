@@ -4,7 +4,13 @@
     "compatibilityLevel": "JAVA_21",
     "mixins": [
         "ItemMixin",
-        "ItemAccessor"
+        "ItemAccessor",
+        
+        "FoodDataMixin",
+        "FoodDataAccessor",
+
+        "ThirstDataMixin",
+        "ThirstDataAccessor"
     ],
     "injectors": {
         "defaultRequire": 1

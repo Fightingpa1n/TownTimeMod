@@ -40,11 +40,11 @@ public class ItemMixin {
     public void finishSustenance(ItemStack stack, Level level, LivingEntity entity, CallbackInfoReturnable<ItemStack> cir) {
         if (ConsumableHelper.isConsumable(stack)) {
             SustenanceProperties props = ConsumableHelper.getSustenanceProperties(stack);
-            
+
             //Apply hunger and thirst
             if (entity instanceof Player player) {
                 ConsumableHelper.consume(player, props);
-
+                
                 //Apply effects
                 if (!level.isClientSide) {
                     ConsumableHelper.applyEffects(player, props);
