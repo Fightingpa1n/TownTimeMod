@@ -11,6 +11,11 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
+
+import org.lwjgl.opengl.GL11;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.fightingpainter.mc.towntime.client.hud.elements.TextElement.*;
 import net.fightingpainter.mc.towntime.util.Txt;
 
@@ -228,6 +233,23 @@ public abstract class BaseHudElement {
         renderText(new TextElement(text, Minecraft.getInstance().font, Txt.DEFAULT, AlignH.CENTER, AlignV.CENTER), x, y);
     }
 
+    //=========== Alpha ===========\\
+    /**
+     * Enable Alpha Blending with the given alpha value
+     * @param alpha the alpha value to enable
+    */
+    protected void enableAlpha(float alpha) {
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    /** Disable Alpha Blending */
+    protected void disableAlpha() {
+        RenderSystem.disableBlend();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+    
 
     //============================== Sounds ==============================\\
     //=========== Start ===========\\

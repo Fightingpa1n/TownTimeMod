@@ -13,6 +13,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.fightingpainter.mc.towntime.mixin.ItemAccessor;
 import net.neoforged.fml.loading.FMLPaths;
@@ -26,9 +27,9 @@ import java.nio.charset.StandardCharsets;
 public class SustinancePropertyLoader {
 
     public static void load() {
-
+        if (!Files.exists(getFilePath())) {generateFile();} //generate the file if it doesn't exist
+        loadSustinanceProperties(); //load sustenance properties from the file
     }
-
 
     /** tries to load the sustenance properties from the sustenance data file and applies them to the specified items */
     private static void loadSustinanceProperties() {
@@ -50,15 +51,22 @@ public class SustinancePropertyLoader {
     }
 
 
-    /** Removes the FoodProperties from Items */
+    /** Removes the FoodProperties from Items */ //TODO: either remove it or fix it, can't use it in a maybe works state
     private static void removeFoodProperties() {
         for (Item item : BuiltInRegistries.ITEM) {
             ItemAccessor itemAccessor = (ItemAccessor) item;
             DataComponentMap components = itemAccessor.getProperties();
             if (components.has(DataComponents.FOOD)) {
+                DataComponentMap.Builder builder = DataComponentMap.builder();
 
+                components.forEach(component -> {
+                    DataComponentType<?> type = component.type();
 
-
+                    // Exclude the FoodProperties component
+                    if (!type.equals(DataComponents.FOOD)) {
+                        builder.set(() -> (DataComponentType<Object>) type, component.value());
+                    }
+                });
             }
         }
     }
@@ -81,7 +89,7 @@ public class SustinancePropertyLoader {
                 }
             }
             
-            Files.writeString(getFilePath(), genData.toJson(), StandardCharsets.UTF_8); //write the generated data to the file
+            Files.writeString(getFilePath(), genData.toJson(4), StandardCharsets.UTF_8); //write the generated data to the file
 
         } catch (Exception e) {
             TownTime.LOGGER.error("Failed to generate sustenance data file, manual creation may be required at: "+getFilePath().toString(), e);
@@ -96,7 +104,7 @@ public class SustinancePropertyLoader {
     private static SustenanceProperties convertFoodProperties(FoodProperties prop) {
         return new SustenanceProperties(
             prop.nutrition(), //get nutrition value
-            ((float) (prop.saturation() * prop.nutrition() * 2.0F)), //calculate saturation value from saturation modifier
+            prop.saturation(), //get saturation value
             0, //0 as food properties don't have a water value
             0.0f, //0 as food properties don't have a hydration value
             prop.canAlwaysEat(), //get can always consume value
@@ -120,17 +128,8 @@ public class SustinancePropertyLoader {
             .collect(Collectors.toList());
     }
 
-
-
-
-
-
     /** get the file path of the config file */
     private static Path getFilePath() {return FMLPaths.CONFIGDIR.get().resolve("sustenance_data.json");}
-
-
-
-
 
     /** Encodes a SustenanceProperties object into a JSON string */
     private static String encode(SustenanceProperties properties) {

@@ -20,8 +20,9 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) { //client tick handler so to keep the tick count accurate
-        if (!Minecraft.getInstance().isPaused()) { //while unpaused
-            HudRenderer.clientTick(); //call client tick method in HudRenderer
+        Minecraft mc = Minecraft.getInstance(); //get instance
+        if (!mc.isPaused()) { //while unpaused
+            HudRenderer.clientTick(mc.player); //call client tick method in HudRenderer
         }
     }
 

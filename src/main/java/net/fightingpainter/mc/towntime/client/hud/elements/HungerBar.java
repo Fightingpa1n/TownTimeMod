@@ -8,6 +8,7 @@ import net.fightingpainter.mc.towntime.ClientConfig;
 import net.fightingpainter.mc.towntime.TownTime;
 import net.fightingpainter.mc.towntime.food.ConsumableHelper;
 import net.fightingpainter.mc.towntime.food.SustenanceProperties;
+import net.fightingpainter.mc.towntime.food.SustinanceData;
 import net.fightingpainter.mc.towntime.util.Txt;
 
 
@@ -52,14 +53,20 @@ public class HungerBar extends BaseBarElement{
     //=========== Other ===========\\
     private static final int HUNGRY_THRESHOLD = 6; //hunger level threshold for hungry texture
     private static final int STARVING_THRESHOLD = 0; //hunger level threshold for starving texture
-    private static final float INCREASE_SUB_INCREASE = 0.1f; //how much to increase the hunger increase subbar each tick
+    private static final float INCREASE_SUB_INCREASE = 0.3f; //how much to increase the hunger increase subbar each tick
+
+    //=========== Preview ===========\\
+    private static final float PREVIEW_MAX_ALPHA = 0.85f; //max alpha value for preview
+    private static final float PREVIEW_MIN_ALPHA = 0.1f; //min alpha value for preview
+    private static final float PREVIEW_ALPHA_CHANGE = 0.025f; //how much to change the alpha value each tick
 
     //============================== Variables ==============================\\
     private BarVariant variant = BarVariant.NORMAL; //hunger bar variant (different textures for different status effects and such)
     private DrumstickVariation drumstick = DrumstickVariation.NORMAL; //drumstick variant (looks different depending on hunger level, normal, hungry if can't do stuff like sprint, and starving for once you take damage)
 
     private boolean doPreview = false; //previews are possible
-    private int previewCounter = 0; //tick counter for preview
+    private boolean previewAlphaIncrease = true; //if preview alpha is increasing or decreasing
+    private float previewAlpha; //alpha value for preview
 
     //=========== Hunger ===========\\
     private float previousValue; //previous hunger value
@@ -93,7 +100,7 @@ public class HungerBar extends BaseBarElement{
 
     private float saturationPreviewValue; //value of the saturation preview subbar
     private boolean saturationPreviewSub = false; //if the saturation preview subbar is currently shown
-
+    
     
     //============================== Overrides ==============================\\
     public HungerBar() { //set size
@@ -109,8 +116,10 @@ public class HungerBar extends BaseBarElement{
 
     @Override
     public void getParameters(Player player) {
+        SustinanceData data = SustinanceData.of(player); //get sustinance data
+
         previousValue = value; //set previous value
-        value = (int)player.getFoodData().getFoodLevel();
+        value = data.getHunger(); //get hunger level
         maxValue = 20; //this is hardcoded because the max hunger level never changes
         
         if (value < previousValue) { //if current value is less than previous value (hunger decreased)
@@ -126,7 +135,7 @@ public class HungerBar extends BaseBarElement{
         }
         
         previousSaturationValue = saturationValue; //set previous saturation value
-        saturationValue = player.getFoodData().getSaturationLevel(); //get saturation level
+        saturationValue = data.getSaturation(); //get saturation level
         
         if (saturationValue < previousSaturationValue) { //if current value is less than previous value (saturation decreased)
             saturationDecrease = true; saturationDecreaseCounter = 0; //set decrease alt texture
@@ -155,9 +164,8 @@ public class HungerBar extends BaseBarElement{
                 saturationPreviewValue = Math.min(saturationValue + props.getSaturation(), maxValue); //set preview value to the current value plus the saturation value of the item
                 saturationPreviewSub = true;
             } else {saturationPreviewSub = false;} //previews are not possible
-
         } else {
-            doPreview = false; previewCounter = 0; //previews are not possible (reset preview counter)
+            doPreview = false; //previews are not possible
             previewSub = false; //deactivate preview subbar
             saturationPreviewSub = false; //deactivate saturation preview subbar
         }
@@ -232,7 +240,15 @@ public class HungerBar extends BaseBarElement{
             }
         } else {saturationIncreaseSubValue = saturationFillValue;} //set subbar value to current value if not displaying subbar (so once we should display it, it will have the correct value)
 
-        //TODO: add preview tick stuff so it looks nice.
+        if (doPreview) { //if previews are possible
+            if (previewAlphaIncrease) { //if preview alpha is increasing
+                if (previewAlpha < PREVIEW_MAX_ALPHA) {previewAlpha += PREVIEW_ALPHA_CHANGE;} //increase alpha
+                else {previewAlphaIncrease = false;} //if max alpha is reached, start decreasing
+            } else { //if preview alpha is decreasing
+                if (previewAlpha > PREVIEW_MIN_ALPHA) {previewAlpha -= PREVIEW_ALPHA_CHANGE;} //decrease alpha
+                else {previewAlphaIncrease = true;} //if min alpha is reached, start increasing
+            }
+        }
     }
 
     @Override
@@ -251,9 +267,9 @@ public class HungerBar extends BaseBarElement{
             else {renderHunger(value, maxValue, x, y);} //render normal texture
         }
         
-        
         float saturationFillValue = (ClientConfig.ROUND_SATURATION_TEXTURE) ? Math.round(saturationValue) : saturationValue; //round saturation value if config is set to round saturation texture
         
+        if (saturationPreviewSub) {renderSaturationPreviewSub(saturationPreviewValue, maxValue, x, y);} //render saturation preview subbar
         if (saturationIncreaseSub) { //if increase subbar is active
             renderSaturationIncreaseSub(saturationFillValue, maxValue, x, y); //render increase subbar (we actually render the normal bar as the subbar)
             if (saturationDecrease) {renderSaturationDecrease(saturationIncreaseSubValue, maxValue, x, y);} //render decrease texture (we render the subbar as a fake main bar making it seem like it slowly is increasing)
@@ -264,7 +280,6 @@ public class HungerBar extends BaseBarElement{
             else if (saturationIncrease) {renderSaturationIncrease(saturationFillValue, maxValue, x, y);} //render increase texture
             else {renderSaturation(saturationFillValue, maxValue, x, y);} //render normal texture
         }
-        if (saturationPreviewSub) {renderSaturationPreviewSub(saturationPreviewValue, maxValue, x, y);} //render saturation preview subbar
         
         //render hunger bar value as text
         if (ClientConfig.HUNGER_VALUE) {renderIntValueText((int)value, (int)maxValue, Txt.DEFAULT, ClientConfig.HUNGER_VALUE_SIZE, x+BAR_OFFSET_X, y+BAR_OFFSET_Y, BAR_WIDTH, BAR_HEIGHT);}
@@ -299,29 +314,35 @@ public class HungerBar extends BaseBarElement{
         renderBarLeft(variant.texture, TEXTURE_WIDTH, TEXTURE_HEIGHT, BAR_U, INCREASE_SUB_V, BAR_WIDTH, BAR_HEIGHT, value, maxValue, x+BAR_OFFSET_X, y+BAR_OFFSET_Y);
     }
 
-    private void renderHungerPreviewSub(float value, float maxValue, int x, int y) { //render hunger preview sub bar
-        renderBarLeft(variant.texture, TEXTURE_WIDTH, TEXTURE_HEIGHT, BAR_U, PREVIEW_SUB_V, BAR_WIDTH, BAR_HEIGHT, value, maxValue, x+BAR_OFFSET_X, y+BAR_OFFSET_Y);
-    }
-
+    
     //=========== Saturation Bar ===========\\
     private void renderSaturation(float value, float maxValue, int x, int y) { //render saturation bar
         renderBarLeft(variant.texture, TEXTURE_WIDTH, TEXTURE_HEIGHT, SATURATION_U, NORMAL_V, BAR_WIDTH, BAR_HEIGHT, value, maxValue, x+BAR_OFFSET_X, y+BAR_OFFSET_Y);
     }
-
+    
     private void renderSaturationDecrease(float value, float maxValue, int x, int y) { //render saturation decrease bar
         renderBarLeft(variant.texture, TEXTURE_WIDTH, TEXTURE_HEIGHT, SATURATION_U, DECREASE_V, BAR_WIDTH, BAR_HEIGHT, value, maxValue, x+BAR_OFFSET_X, y+BAR_OFFSET_Y);
     }
-
+    
     private void renderSaturationIncrease(float value, float maxValue, int x, int y) { //render saturation increase bar
         renderBarLeft(variant.texture, TEXTURE_WIDTH, TEXTURE_HEIGHT, SATURATION_U, INCREASE_V, BAR_WIDTH, BAR_HEIGHT, value, maxValue, x+BAR_OFFSET_X, y+BAR_OFFSET_Y);
     }
-
+    
     private void renderSaturationIncreaseSub(float value, float maxValue, int x, int y) { //render saturation increase sub bar
         renderBarLeft(variant.texture, TEXTURE_WIDTH, TEXTURE_HEIGHT, SATURATION_U, INCREASE_SUB_V, BAR_WIDTH, BAR_HEIGHT, value, maxValue, x+BAR_OFFSET_X, y+BAR_OFFSET_Y);
     }
+    
+    //=========== Preview Bars ===========\\
+    private void renderHungerPreviewSub(float value, float maxValue, int x, int y) { //render hunger preview sub bar
+        enableAlpha(previewAlpha); //enable alpha
+        renderBarLeft(variant.texture, TEXTURE_WIDTH, TEXTURE_HEIGHT, BAR_U, PREVIEW_SUB_V, BAR_WIDTH, BAR_HEIGHT, value, maxValue, x+BAR_OFFSET_X, y+BAR_OFFSET_Y);
+        disableAlpha(); //disable alpha
+    }
 
     private void renderSaturationPreviewSub(float value, float maxValue, int x, int y) { //render saturation preview sub bar
+        enableAlpha(previewAlpha); //enable alpha
         renderBarLeft(variant.texture, TEXTURE_WIDTH, TEXTURE_HEIGHT, SATURATION_U, PREVIEW_SUB_V, BAR_WIDTH, BAR_HEIGHT, value, maxValue, x+BAR_OFFSET_X, y+BAR_OFFSET_Y);
+        disableAlpha(); //disable alpha
     }
 
 

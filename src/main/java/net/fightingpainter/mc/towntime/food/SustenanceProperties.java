@@ -16,8 +16,14 @@ import net.minecraft.world.item.ItemStack;
 
 /** the properties of a food item that can be consumed*/
 public class SustenanceProperties {
-    //for now this is just for water, but I asked my friend if I should combine it with food properties and until he answers I'll just make a Water for now...
-    private final static float DEFAULT_CONSUME_TIME = 1.6F;
+    public static final int DEFAULT_NUTRITION = 0;
+    public static final float DEFAULT_SATURATION = 0.0F;
+    public static final int DEFAULT_WATER = 0;
+    public static final float DEFAULT_HYDRATION = 0.0F;
+    public static final boolean DEFAULT_CAN_ALWAYS_CONSUME = false;
+    public final static float DEFAULT_CONSUME_TIME = 1.6F;
+    public static final Optional<ItemStack> DEFAULT_USING_CONVERTS_TO = Optional.empty();
+    public static final List<SustenanceProperties.PossibleEffect> DEFAULT_EFFECTS = List.of();
 
     private final int nutrition; //how much hunger is restored upon consumtion
     private final float saturation; //how much saturation is "restored" upon consumtion
@@ -80,9 +86,9 @@ public class SustenanceProperties {
     /** Codec for SustenanceProperties*/
     public static final Codec<SustenanceProperties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ExtraCodecs.NON_NEGATIVE_INT.fieldOf("nutrition").forGetter(SustenanceProperties::getNutrition),
-        Codec.FLOAT.fieldOf("saturation_modifier").forGetter(SustenanceProperties::getSaturation),
+        Codec.FLOAT.fieldOf("saturation").forGetter(SustenanceProperties::getSaturation),
         ExtraCodecs.NON_NEGATIVE_INT.fieldOf("water").forGetter(SustenanceProperties::getWater),
-        Codec.FLOAT.fieldOf("hydration_modifier").forGetter(SustenanceProperties::getHydration),
+        Codec.FLOAT.fieldOf("hydration").forGetter(SustenanceProperties::getHydration),
         Codec.BOOL.optionalFieldOf("can_always_consume", Boolean.valueOf(false)).forGetter(SustenanceProperties::canAlwaysConsume),
         Codec.FLOAT.optionalFieldOf("consume_time", DEFAULT_CONSUME_TIME).forGetter(SustenanceProperties::getConsumeTime),
         ItemStack.SINGLE_ITEM_CODEC.optionalFieldOf("using_converts_to").forGetter(SustenanceProperties::getUsingConvertsTo),

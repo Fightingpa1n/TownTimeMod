@@ -45,7 +45,7 @@ public class HealthBar extends BaseBarElement { //health bar element
     private static final int HEAL_SUB_V = 48; //heal subbar texture variant v coordinate
 
     //=========== Sounds ===========\\
-    private static final SoundEvent WARNING_SOUND = ModSounds.HUD_HEARTBEAT.get(); //the sound that will be played when the warning starts 
+    private static final SoundEvent WARNING_SOUND = ModSounds.HUD_HEARTBEAT.get(); //the sound that will be played when the warning starts
     private static final float WARNING_SOUND_VOLUME = 1.0f; //the volume of the warning sound
 
     //=========== Ticks ===========\\
@@ -57,8 +57,8 @@ public class HealthBar extends BaseBarElement { //health bar element
     private static final int WARNING_BEAT_TICKS = 3; //the amount of ticks the heart will use the heartBeat texture
     
     //=========== Other ===========\\
-    private static final float DAMAGE_SUB_DECREASE = 0.1f; //the amount the damage subbar will decrease each tick
-    private static final float HEAL_SUB_INCREASE = 0.1f; //the amount the heal subbar will decrease each tick
+    private static final float DAMAGE_SUB_DECREASE = 0.3f; //the amount the damage subbar will decrease each tick
+    private static final float HEAL_SUB_INCREASE = 0.3f; //the amount the heal subbar will decrease each tick
     private static final int WARNING_THRESHOLD = 4; //the health threshold for the first warning speed
     private static final int WARNING_INTERVAL_MULTIPLIER = 10; //the multiplier used to calculate the interval for each warning speed (intervalTicks = health * multiplier)
     
@@ -191,7 +191,7 @@ public class HealthBar extends BaseBarElement { //health bar element
             }
         } else {healSubValue = barFillValue;} //set subbar value to current value if not displaying subbar (so once we should display it, it will have the correct value)
     
-        if (warning) { //if warning is active
+        if (warning && value > 0) { //if warning is active and health is above 0
             int interval = valueRound(value) * WARNING_INTERVAL_MULTIPLIER; //calculate interval
             if (warningCounter >= interval+WARNING_BEAT_TICKS) { //if beat ticks are over (start anew)
                 warningCounter = 0; //reset counter
@@ -201,6 +201,10 @@ public class HealthBar extends BaseBarElement { //health bar element
                 playWarningSound(); //play warning sound
                 warningCounter++; //increase counter (to prevent it from playing the sound again)      
             } else {warningCounter++;} //increase counter
+        } else { //if warning is not active
+            warningCounter = 0; //reset counter
+            heartBeat = false; //set heartBeat to false
+            stopWarningSound(); //stop warning sound
         }
     }
 

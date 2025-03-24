@@ -24,6 +24,9 @@ import net.fightingpainter.mc.towntime.data.ModDataComponentTypes;
 import net.fightingpainter.mc.towntime.food.SustenanceProperties;
 import net.fightingpainter.mc.towntime.food.SustinancePropertyLoader;
 import net.fightingpainter.mc.towntime.mixin.ItemAccessor;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -61,7 +64,7 @@ public class TownTime {
         LOGGER.info("HELLO FROM COMMON SETUP");
         
         event.enqueueWork(() -> {
-            // SustinanceLoader.load(); //load sustinance data
+            SustinancePropertyLoader.load(); //load sustinance data 
         });
     }
 }

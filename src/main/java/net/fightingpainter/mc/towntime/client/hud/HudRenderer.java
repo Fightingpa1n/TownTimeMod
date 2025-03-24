@@ -100,20 +100,22 @@ public class HudRenderer {
     }
 
 
-    public static void clientTick() { //get's called each tick
-        hotbar.tick(); //tick hotbar
-        offhand.tick(); //tick offhand slot
+    public static void clientTick(Player player) { //get's called each tick
+        if (player == null) return; //if player is null, return
+        
+        if (hotbar.shouldRender(player)) {hotbar.tick();} //tick hotbar
+        if (offhand.shouldRender(player)) {offhand.tick();} //tick offhand slot
+        
+        if (healthBar.shouldRender(player)) {healthBar.tick();} //tick health bar
+        if (hungerBar.shouldRender(player)) {hungerBar.tick();} //tick hunger bar
+        if (thirstBar.shouldRender(player)) {thirstBar.tick();} //tick thirst bar
 
-        healthBar.tick(); //tick health bar
-        hungerBar.tick(); //tick hunger bar
-        thirstBar.tick(); //tick thirst bar
+        if (temperatureDisplay.shouldRender(player)) {temperatureDisplay.tick();} //tick temperature display
+        if (armorDisplay.shouldRender(player)) {armorDisplay.tick();} //tick armor display
+        if (absorbtionDisplay.shouldRender(player)) {absorbtionDisplay.tick();} //tick absorbtion display
 
-        temperatureDisplay.tick(); //tick temperature display
-        armorDisplay.tick(); //tick armor display
-        absorbtionDisplay.tick(); //tick absorbtion display
-
-        airBar.tick(); //tick air bar
-        mountBar.tick(); //tick mount bar
-        jumpBar.tick(); //tick jump bar
+        if (airBar.shouldRender(player)) {airBar.tick();} //tick air bar
+        if (mountBar.shouldRender(player)) {mountBar.tick();} //tick mount bar
+        if (jumpBar.shouldRender(player)) {jumpBar.tick();} //tick jump bar
     }
 }
