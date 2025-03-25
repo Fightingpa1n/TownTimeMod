@@ -1,7 +1,6 @@
 package net.fightingpainter.mc.towntime.food;
 
 import net.fightingpainter.mc.towntime.mixin.FoodDataAccessor;
-import net.fightingpainter.mc.towntime.mixin.ThirstDataAccessor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import toughasnails.api.thirst.ThirstHelper;
@@ -10,25 +9,25 @@ import toughasnails.thirst.ThirstData;
 public class SustinanceData {
 
     private FoodDataAccessor foodData;
-    private ThirstDataAccessor thirstData;
+    private ThirstData thirstData;
 
-    private SustinanceData(FoodDataAccessor foodData, ThirstDataAccessor thirstData) {
+    private SustinanceData(FoodDataAccessor foodData, ThirstData thirstData) {
         this.foodData = foodData;
         this.thirstData = thirstData;
     }
 
     /**
-     * Get's the SUstinanceData of a player 
+     * Get's the SustinanceData of a player 
      * @param player the player to get the sustinance data of
      * @return the sustinance data of the player
     */
     public static SustinanceData of(Player player) {
         FoodData foodData = player.getFoodData();
         ThirstData thirstData = (ThirstData)ThirstHelper.getThirst(player);
-        return new SustinanceData((FoodDataAccessor)foodData, (ThirstDataAccessor)thirstData);    
+        return new SustinanceData((FoodDataAccessor)foodData, thirstData);
     }
 
-    //============================== Methods ==============================\\
+    //============================== Hunger Methods ==============================\\
     //=========== Hunger ===========\\
     /** get the Hunger Value of the player */
     public int getHunger() {
@@ -74,23 +73,24 @@ public class SustinanceData {
     }
     
     //=========== Exhaustion ===========\\
-    /** get the Exhaustion Value of the player */
-    public float getExhaustion() {
+    /** get the Hunger Exhaustion Value of the player */
+    public float getHungerExhaustion() {
         return foodData.getExhaustionLevel();
     }
 
     /**
-     * set the Exhaustion Value of the player
+     * set the Hunger Exhaustion Value of the player
      * @param exhaustion the new exhaustion value
     */
-    public void setExhaustion(float exhaustion) {
+    public void setHungerExhaustion(float exhaustion) {
         foodData.setExhaustionLevel(exhaustion);
     }
     
+    //============================== Thirst Methods ==============================\\
     //=========== Thirst ===========\\
     /** get the Thirst Value of the player */
     public int getThirst() {
-        return thirstData.getThirstLevel();
+        return thirstData.getThirst();
     }
     
     /**
@@ -98,7 +98,7 @@ public class SustinanceData {
      * @param thirst the new thirst value
     */
     public void setThirst(int thirst) {
-        thirstData.setThirstLevel(Math.clamp(thirst, 0, 20));
+        thirstData.setThirst(Math.clamp(thirst, 0, 20));
     }
     
     /**
@@ -112,7 +112,7 @@ public class SustinanceData {
     //=========== Hydration ===========\\
     /** get the Hydration Value of the player */
     public float getHydration() {
-        return thirstData.getHydrationLevel();
+        return thirstData.getHydration();
     }
 
     /**
@@ -120,7 +120,7 @@ public class SustinanceData {
      * @param hydration the new hydration value
     */
     public void setHydration(float hydration) {
-        thirstData.setHydrationLevel(Math.clamp(hydration, 0, 20));
+        thirstData.setHydration(Math.clamp(hydration, 0, 20));
     }
 
     /**
@@ -134,7 +134,7 @@ public class SustinanceData {
     //=========== Thirst Exhaustion ===========\\
     /** get the Thirst Exhaustion Value of the player */
     public float getThirstExhaustion() {
-        return thirstData.getExhaustionLevel();
+        return thirstData.getExhaustion();
     }
 
     /**
@@ -142,7 +142,7 @@ public class SustinanceData {
      * @param exhaustion the new exhaustion value
     */
     public void setThirstExhaustion(float exhaustion) {
-        thirstData.setExhaustionLevel(exhaustion);
+        thirstData.setExhaustion(exhaustion);
     }
 
     //=========== Tick Timer ===========\\

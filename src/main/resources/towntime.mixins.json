@@ -10,7 +10,11 @@
         "FoodDataAccessor",
 
         "ThirstDataMixin",
-        "ThirstDataAccessor"
+        "ThirstHandlerMixin",
+        "ThirstHooksMixin",
+        "TemperatureHandlerMixin",
+        
+        "PlayerMixin"
     ],
     "injectors": {
         "defaultRequire": 1

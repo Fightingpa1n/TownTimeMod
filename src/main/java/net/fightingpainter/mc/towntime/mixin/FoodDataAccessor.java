@@ -17,4 +17,7 @@ public interface FoodDataAccessor {
 
     @Accessor("tickTimer") public abstract int getTickTimer();
     @Accessor("tickTimer") public abstract void setTickTimer(int tickTimer);
+
+    @Accessor("lastFoodLevel") public abstract int getLastFoodLevel();
+    @Accessor("lastFoodLevel") public abstract void setLastFoodLevel(int lastFoodLevel);
 }
