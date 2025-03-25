@@ -11,4 +11,7 @@ public interface ThirstDataAccessor {
 
     @Accessor("hydrationLevel") public abstract float getHydrationLevel();
     @Accessor("hydrationLevel") public abstract void setHydrationLevel(float hydrationLevel);
+
+    @Accessor("exhaustionLevel") public abstract float getExhaustionLevel();
+    @Accessor("exhaustionLevel") public abstract void setExhaustionLevel(float exhaustionLevel);
 }

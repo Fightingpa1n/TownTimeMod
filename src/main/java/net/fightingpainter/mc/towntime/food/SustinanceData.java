@@ -34,7 +34,7 @@ public class SustinanceData {
     public int getHunger() {
         return foodData.getFoodLevel();
     }
-
+    
     /**
      * set the Hunger Value of the player
      * @param hunger the new hunger value
@@ -42,7 +42,7 @@ public class SustinanceData {
     public void setHunger(int hunger) {
         foodData.setFoodLevel(Math.clamp(hunger, 0, 20));
     }
-
+    
     /**
      * add to the hunger value of the player
      * @param hunger the amount to add to the hunger value
@@ -50,13 +50,13 @@ public class SustinanceData {
     public void addHunger(int hunger) {
         setHunger(getHunger() + hunger);
     }
-
+    
     //=========== Saturation ===========\\
     /** get the Saturation Value of the player */
     public float getSaturation() {
         return foodData.getSaturationLevel();
     }
-
+    
     /**
      * set the Saturation Value of the player
      * @param saturation the new saturation value
@@ -64,7 +64,7 @@ public class SustinanceData {
     public void setSaturation(float saturation) {
         foodData.setSaturationLevel(Math.clamp(saturation, 0, 20));
     }
-
+    
     /**
      * add to the saturation value of the player
      * @param saturation the amount to add to the saturation value
@@ -72,13 +72,27 @@ public class SustinanceData {
     public void addSaturation(float saturation) {
         setSaturation(getSaturation() + saturation);
     }
+    
+    //=========== Exhaustion ===========\\
+    /** get the Exhaustion Value of the player */
+    public float getExhaustion() {
+        return foodData.getExhaustionLevel();
+    }
 
+    /**
+     * set the Exhaustion Value of the player
+     * @param exhaustion the new exhaustion value
+    */
+    public void setExhaustion(float exhaustion) {
+        foodData.setExhaustionLevel(exhaustion);
+    }
+    
     //=========== Thirst ===========\\
     /** get the Thirst Value of the player */
     public int getThirst() {
         return thirstData.getThirstLevel();
     }
-
+    
     /**
      * set the Thirst Value of the player
      * @param thirst the new thirst value
@@ -86,7 +100,7 @@ public class SustinanceData {
     public void setThirst(int thirst) {
         thirstData.setThirstLevel(Math.clamp(thirst, 0, 20));
     }
-
+    
     /**
      * add to the thirst value of the player
      * @param thirst the amount to add to the thirst value
@@ -94,7 +108,7 @@ public class SustinanceData {
     public void addThirst(int thirst) {
         setThirst(getThirst() + thirst);
     }
-
+    
     //=========== Hydration ===========\\
     /** get the Hydration Value of the player */
     public float getHydration() {
@@ -115,5 +129,38 @@ public class SustinanceData {
     */
     public void addHydration(float hydration) {
         setHydration(getHydration() + hydration);
+    }
+
+    //=========== Thirst Exhaustion ===========\\
+    /** get the Thirst Exhaustion Value of the player */
+    public float getThirstExhaustion() {
+        return thirstData.getExhaustionLevel();
+    }
+
+    /**
+     * set the Thirst Exhaustion Value of the player
+     * @param exhaustion the new exhaustion value
+    */
+    public void setThirstExhaustion(float exhaustion) {
+        thirstData.setExhaustionLevel(exhaustion);
+    }
+
+    //=========== Tick Timer ===========\\
+    /** get the Tick Timer Value of the player */
+    public int getTickTimer() {
+        return foodData.getTickTimer();
+    }
+
+    /**
+     * set the Tick Timer Value of the player
+     * @param tickTimer the new tick timer value
+    */
+    public void setTickTimer(int tickTimer) {
+        foodData.setTickTimer(tickTimer);
+    }
+
+    /** increment the tick timer value of the player */
+    public void incrementTickTimer() {
+        setTickTimer(getTickTimer() + 1);
     }
 }

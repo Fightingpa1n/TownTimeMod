@@ -11,4 +11,10 @@ public interface FoodDataAccessor {
 
     @Accessor("saturationLevel") public abstract float getSaturationLevel();
     @Accessor("saturationLevel") public abstract void setSaturationLevel(float saturationLevel);
+
+    @Accessor("exhaustionLevel") public abstract float getExhaustionLevel();
+    @Accessor("exhaustionLevel") public abstract void setExhaustionLevel(float exhaustionLevel);
+
+    @Accessor("tickTimer") public abstract int getTickTimer();
+    @Accessor("tickTimer") public abstract void setTickTimer(int tickTimer);
 }
