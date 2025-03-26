@@ -84,5 +84,4 @@ public class ItemMixin {
             cir.setReturnValue(duration);
         }
     }
-    
 }

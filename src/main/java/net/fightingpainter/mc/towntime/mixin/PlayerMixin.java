@@ -9,6 +9,7 @@ import net.fightingpainter.mc.towntime.food.DataHandler;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
+import net.minecraft.world.level.GameRules;
 import toughasnails.api.temperature.TemperatureHelper;
 import toughasnails.api.thirst.ThirstHelper;
 import toughasnails.temperature.TemperatureData;
@@ -30,8 +31,9 @@ public abstract class PlayerMixin {
             FoodDataAccessor food = (FoodDataAccessor)player.getFoodData(); //get food data
             ThirstData thirst = (ThirstData)ThirstHelper.getThirst(player); //get thirst data
             TemperatureData temperature = (TemperatureData)TemperatureHelper.getTemperatureData(player); //get temperature data
+            GameRules rules = player.level().getGameRules();
             
-            DataHandler.playerTick(food, thirst, temperature, player, difficulty); //do player tick
+            DataHandler.playerTick(food, thirst, temperature, player, difficulty, rules); //do player tick
         }
     }
 
