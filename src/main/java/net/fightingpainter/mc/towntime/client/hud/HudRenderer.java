@@ -31,15 +31,12 @@ public class HudRenderer {
     private static final BaseHudElement airBar = new AirBar(); //create air bar element
     private static final BaseHudElement mountBar = new MountBar(); //create mount bar element
     private static final BaseHudElement jumpBar = new JumpBar(); //create jump bar element
-
+    
     public static void render(GuiGraphics graphics) {
         Minecraft minecraft = Minecraft.getInstance(); //get instance
         Player player = minecraft.player; //get player
         if (minecraft.options.hideGui) return; //if gui is hidden, return
         if (player == null) return; //if player is null, return
-
-        graphics.pose().pushPose(); //push pose
-        graphics.pose().translate(0, 0, 50); //translate
 
         // int hudX = graphics.guiWidth() - HudTextureWidth;
         // int hudY = graphics.guiHeight() - HudTextureHeight;
@@ -88,8 +85,6 @@ public class HudRenderer {
         airBar.renderElement(graphics, player, (graphics.guiWidth()-airBar.getWidth())/2, graphics.guiHeight() - (hotbar.getHeight() + airBar.getHeight() + 20)); //render air bar
         mountBar.renderElement(graphics, player, 2, graphics.guiHeight()-(mountBar.getHeight()+45)); //render mount bar
         jumpBar.renderElement(graphics, player, graphics.guiWidth()-jumpBar.getWidth()-2, (graphics.guiHeight()-jumpBar.getHeight())/2); //render jump bar
-        
-        graphics.pose().popPose(); //pop pose
     }
     
     public static void xpBarRenderer(Screen screen, GuiGraphics graphics) {

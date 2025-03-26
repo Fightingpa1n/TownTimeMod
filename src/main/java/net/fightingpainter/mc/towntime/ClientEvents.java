@@ -60,7 +60,7 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void renderHud(RenderGuiEvent.Pre event) { //hud rendering
+    public static void renderHud(RenderGuiEvent.Post event) { //hud rendering
         HudRenderer.render(event.getGuiGraphics());
     }
 
