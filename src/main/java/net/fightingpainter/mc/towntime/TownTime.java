@@ -24,6 +24,7 @@ import net.fightingpainter.mc.towntime.data.ModDataComponentTypes;
 import net.fightingpainter.mc.towntime.food.SustenanceProperties;
 import net.fightingpainter.mc.towntime.food.SustinancePropertyLoader;
 import net.fightingpainter.mc.towntime.mixin.ItemAccessor;
+import net.fightingpainter.mc.towntime.network.ModNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -55,6 +56,7 @@ public class TownTime {
         // Note that this is necessary if and only if we want *this* class (TownTimeMod) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         // NeoForge.EVENT_BUS.register(this);
+        modEventBus.addListener(ModNetworking::registerPayloads);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);

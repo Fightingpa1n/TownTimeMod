@@ -13,6 +13,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
+import net.fightingpainter.mc.towntime.food.CustomTemperatureData;
 import net.fightingpainter.mc.towntime.food.SustinanceData;
 import net.fightingpainter.mc.towntime.mixin.FoodDataMixin;
 import net.fightingpainter.mc.towntime.util.Txt;
@@ -118,6 +119,16 @@ public class DebugCommands {
                     )
                 )
             )
+
+            .then(Commands.literal("temperature")
+                .executes(context -> getTemperature(context))
+                .then(Commands.literal("set")
+                    .then(Commands.argument("newTemperature", FloatArgumentType.floatArg(-100, 100))
+                        .executes(context -> setTemperature(context, FloatArgumentType.getFloat(context, "newTemperature")))
+                    )
+                )
+            )
+
         );
 
         dispatcher.register(Commands.literal("debugItem").executes(context -> getItem(context)));
@@ -322,6 +333,32 @@ public class DebugCommands {
             SustinanceData sustinanceData = SustinanceData.of(player); //get sustinance data
             sustinanceData.addHydration(hydration); //add hydration
             message(context, "Hydration set to " + sustinanceData.getHydration()); //send message
+            return 1; //return success
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0; //return failure
+        }
+    }
+
+    //=========== Temperature ===========\\
+    private static int getTemperature(CommandContext<CommandSourceStack> context) {
+        try {
+            Player player = context.getSource().getPlayerOrException(); //get player
+            CustomTemperatureData tempData = CustomTemperatureData.of(player); //get temperature data
+            message(context, "Temperature: " + tempData.getTemperatureValue()+" ("+tempData.getTemperatureLevel().name()+")"); //send temperature
+            return 1; //return success
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0; //return failure
+        }
+    }
+
+    private static int setTemperature(CommandContext<CommandSourceStack> context, float temperature) {
+        try {
+            Player player = context.getSource().getPlayerOrException(); //get player
+            CustomTemperatureData tempData = CustomTemperatureData.of(player); //get temperature data
+            tempData.setTemperatureValue(temperature); //set temperature
+            message(context, "Temperature set to " + tempData.getTemperatureValue()+" ("+tempData.getTemperatureLevel().name()+")"); //send message
             return 1; //return success
         } catch (Exception e) {
             e.printStackTrace();

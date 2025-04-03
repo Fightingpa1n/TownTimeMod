@@ -7,11 +7,14 @@ import toughasnails.api.temperature.TemperatureHelper;
 import toughasnails.api.temperature.TemperatureLevel;
 
 import net.fightingpainter.mc.towntime.TownTime;
+import net.fightingpainter.mc.towntime.food.CustomTemperatureData;
 
 
 public class TemperatureDisplay extends BaseHudElement {
     private final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(TownTime.MOD_ID, "textures/hud/temperature.png");
     private int textureOffset = 0;
+
+    private String testText = "";
 
     public TemperatureDisplay() {
         this.width = 16;
@@ -44,10 +47,17 @@ public class TemperatureDisplay extends BaseHudElement {
                 textureOffset = 4;
                 break;
         }
+
+        CustomTemperatureData customTemperatureData = CustomTemperatureData.of(player);
+        float temperatureValue = customTemperatureData.getTemperatureValue();
+        String temperatureText = customTemperatureData.getTemperatureLevel().name();
+        testText = "Temperature: "+temperatureText+" ("+temperatureValue+")";
     }
 
     @Override
     public void render() {
         renderPartialTexture(TEXTURE, 80, 16, 16*textureOffset, 0, 16, 16, x, y);
+        
+        renderText(testText, getFont(), 0xFFFFFF, x-20, y); //render test text
     }
 }

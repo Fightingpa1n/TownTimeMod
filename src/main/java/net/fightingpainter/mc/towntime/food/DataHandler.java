@@ -1,6 +1,7 @@
 package net.fightingpainter.mc.towntime.food;
 
 import net.fightingpainter.mc.towntime.mixin.FoodDataAccessor;
+import net.fightingpainter.mc.towntime.network.packets.PlayerTemperatureDataSync;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -144,7 +145,48 @@ public class DataHandler {
         //=========== Reset ===========\\
         if (resetFoodTimer) {food.setTickTimer(0);} //reset food tick timer
         if (resetThirstTimer) {thirst.setTickTimer(0);} //reset thirst tick timer
+
+        /*
+            Old/Vanilla/Tan Temperature Logic:
+                Temperature ranges from FROSTBITE → ICY → NEUTRAL → HOT → SCORCHED.
+                Environment (biomes, blocks, etc.) sets a target temperature.
+                Player temp gradually shifts toward the target over time.
+                HOT/ICY trigger a delay, then hyperthermia or freezing effects begin.
+                Hyperthermia causes slowness, damage over time, and attribute debuffs.
+                Freezing uses Minecraft’s built-in frozen mechanic (like powdered snow).
+                Effects reset or reverse when the player re-enters NEUTRAL or safe zones.
+
+            New Temperature Logic Ideas:
+                Idea 1 Less Lethal Temperature:
+                    the temperature would have now more levels. Freezing, Icy, Cold, Neutral, Warm, Hot, Scorching
+                    temperature levels would now be way slower to change and also have an extra level for each side before.
+                    Freezing: would be pretty much the same as before, where you take damage, and slow down. (would also affect hunger the same as Icy)
+                    Icy: would also affect your hunger like Cold, but a bit more harshly, so it goes down faster.
+                    Cold: would affect your hunger where it goes down slowly on it's own, as if having to use nutrients to keep warm.
+                    Neutral: would be the same as before, where you have no effects and everything is normal.
+                    Warm: would affect your thirst where it goes down slowly on it's own, as if drying out a bit.
+                    Hot: would also affect your thirst like Warm, but a bit more harshly, so it goes down faster.
+                    Scorching: would be pretty much the same as before, where you take damage, but maybe without the being pushed around part. but maybe a bit of nausea or something. (would also affect thirst the same as Hot)
+                    otherwise the same as before when it comes to external factors to set a target temperature. and then slowly change the players temperature to the target temperature.
+                    whith maybe the only difference that harsh temperature changes like freezing from powdered snow or burning would change the temperature way faster.
+                Idea 2 Non Lethal Temperature:
+                    like the first idea, but with some changes to the extremes.
+                    you would not take damage directly while in the extremes
+                    you would get much harsher effects from the extremes like the slowness and nausea from the first idea,
+                    also the speed hunger and thirst would decrease would be way faster.
+        */
         
+        //=========== Temperature ===========\\
+        if(!player.hasEffect(TANEffects.CLIMATE_CLEMENCY)) { //if player doesn't have the climate clemency effect
+
+
+
+
+
+
+        } else {
+            temperature.setLevel(TemperatureLevel.NEUTRAL); //set temperature level to neutral
+        }
 
         /* / ------------------- TEMPERATURE -------------------
             if (!ModConfig.temperature.enableTemperature) return;
@@ -229,5 +271,6 @@ public class DataHandler {
         //=========== Sync ===========\\
         ModPackets.HANDLER.sendToPlayer(new UpdateThirstPacket(thirst.getThirst(), thirst.getHydration()), (ServerPlayer)player);
         ModPackets.HANDLER.sendToPlayer(new UpdateTemperaturePacket(temperature.getLevel(), temperature.getHyperthermiaTicks(), temperature.getNearbyThermoregulators()), (ServerPlayer)player);
+        PlayerTemperatureDataSync.send((ServerPlayer)player, CustomTemperatureData.of(player)); //send the temperature data to the player
     }
 }
